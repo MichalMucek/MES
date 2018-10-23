@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{A67C5B7C-9B33-4AEC-8034-B79D6BF5E41C}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Rozkład_temperatury</RootNamespace>
-    <AssemblyName>Rozkład temperatury</AssemblyName>
+    <RootNamespace>MES</RootNamespace>
+    <AssemblyName>MES</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -45,12 +45,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataSet.cs" />
+    <Compile Include="Element.cs" />
+    <Compile Include="Grid.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="dataSet.json" />
     <None Include="node2.json" />
     <None Include="packages.config" />
     <None Include="node.json" />
