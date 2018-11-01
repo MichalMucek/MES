@@ -20,15 +20,26 @@ namespace MES
         private static Vector<double> yFEIntgPsVector = Vector<double>.Build.Dense(4); //FEIntgPs - Finite Element Integration Points
 
         //Transformation Jacobian
-        private static Vector<double> dydetaMatrix = Vector<double>.Build.Dense(4); //   {   dy/d(eta)               }
-        private static Vector<double> dydksiMatrix = Vector<double>.Build.Dense(4); //   {   -//-        dy/d(ksi)   }
-        private static Vector<double> dxdetaMatrix = Vector<double>.Build.Dense(4); //   {   dx/d(eta)   -//-        }
-        private static Vector<double> dxdksiMatrix = Vector<double>.Build.Dense(4); //   {   -//-        dx/d(ksi)   }
+        private static Vector<double> dydetaVector = Vector<double>.Build.Dense(4); //   {   dy/d(eta)               }
+        private static Vector<double> dydksiVector = Vector<double>.Build.Dense(4); //   {   -//-        dy/d(ksi)   }
+        private static Vector<double> dxdetaVector = Vector<double>.Build.Dense(4); //   {   dx/d(eta)   -//-        }
+        private static Vector<double> dxdksiVector = Vector<double>.Build.Dense(4); //   {   -//-        dx/d(ksi)   }
         //*************************************************************************************************************//
         private static Matrix<double> dNdksiMatrix = Matrix<double>.Build.Dense(4, 4); //   {   dN/d(ksi)   }
         private static Matrix<double> dNdetaMatrix = Matrix<double>.Build.Dense(4, 4); //   {   dN/d(eta)   }
 
+        private static Matrix<double> JacobianMatrix = Matrix<double>.Build.Dense(4, 4);
         private static Matrix<double> inverseJacobianMatrix = Matrix<double>.Build.Dense(4, 4);
+
+        /*  INVERS JACOBIAN MATRIX                                  JACOBIAN MATRIX    
+        
+                    pkt. całk.                                              pkt. całk.
+            pochodne----------  dy/deta dy/dksi dx/deta dx/dksi     pochodne----------  dx/dksi dy/dksi dx/deta dy/deta
+                    1           J-1_2_2 J-1_1_2 J-1_2_1 J-1_1_1             1           J_1_1   J_1_2   J_2_1   J_2_2
+                    2           J-1_2_2 J-1_1_2 J-1_2_1 J-1_1_1             2           J_1_1   J_1_2   J_2_1   J_2_2
+                    3           J-1_2_2 J-1_1_2 J-1_2_1 J-1_1_1             3           J_1_1   J_1_2   J_2_1   J_2_2
+                    4           J-1_2_2 J-1_1_2 J-1_2_1 J-1_1_1             4           J_1_1   J_1_2   J_2_1   J_2_2
+        */
 
         static void Main(string[] args)
         {
@@ -42,6 +53,7 @@ namespace MES
             CalculateShapeFunctions4X4();
             CalculateIntegrationPoints();
             CalculatePD_dNdKsi_dNdEta();
+            CalculateInverseJacobianMatrix();
 
             /*Console.WriteLine(m1.Column(3));
             Console.WriteLine(v1);
@@ -54,6 +66,11 @@ namespace MES
             Console.WriteLine(yFEIntgPsVector);
             Console.WriteLine(dNdksiMatrix);
             Console.WriteLine(dNdetaMatrix);
+            Console.WriteLine(dydetaVector);
+            Console.WriteLine(dydksiVector);
+            Console.WriteLine(dxdetaVector);
+            Console.WriteLine(dxdksiVector);
+            Console.WriteLine(inverseJacobianMatrix);
             Console.ReadKey();
         }
 
@@ -109,9 +126,39 @@ namespace MES
             }
         }
 
-        private static void CalculateInverseJacobian()
+        private static void CalculateJacobianMatrxi()
         {
-            
+            for (int i = 0; i < 4; i++)
+            {
+                dydetaVector[i] = dNdetaMatrix.Row(i) * yFEPsVector;
+                dydksiVector[i] = dNdksiMatrix.Row(i) * yFEPsVector;
+                dxdetaVector[i] = dNdetaMatrix.Row(i) * xFEPsVector;
+                dxdksiVector[i] = dNdksiMatrix.Row(i) * xFEPsVector;
+            }
+
+            JacobianMatrix.SetColumn(0, dxdksiVector);
+            JacobianMatrix.SetColumn(1, dydksiVector);
+            JacobianMatrix.SetColumn(2, dxdetaVector);
+            JacobianMatrix.SetColumn(3, dydetaVector);
+        }
+
+        private static void CalculateInverseJacobianMatrix()
+        {
+            Vector<double> jacobianDeterminantVector = Vector<double>.Build.Dense(4);
+
+            inverseJacobianMatrix.SetColumn(0, dydetaVector);
+            inverseJacobianMatrix.SetColumn(1, dydksiVector * -1);
+            inverseJacobianMatrix.SetColumn(2, dxdetaVector * -1);
+            inverseJacobianMatrix.SetColumn(3, dxdksiVector);
+
+            /*double[] tmpJDetArray = {}
+            Matrix<double> tmpJDetMatrix = Matrix<double>.Build.Dense(2, 2, new double[] { 1, 2, 3, 4 });
+            Console.WriteLine(tmpJDet);*/
+
+            for (int i = 0; i < 4; i++)
+            {
+                
+            }
         }
     }
 }
