@@ -5,7 +5,7 @@ using MathNet.Numerics.LinearAlgebra;
 using Newtonsoft.Json.Linq;
 using org.mariuszgromada.math.mxparser;
 
-namespace MES
+namespace MES_CP
 {
     static class Program
     {

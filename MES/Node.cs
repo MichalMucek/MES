@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace MES
+namespace MES_CP
 {
     public struct Node
     {
