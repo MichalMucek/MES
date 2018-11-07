@@ -11,7 +11,7 @@ namespace MES_CP
     {
         private const double K = 30.0;
 
-        private static Vector<double> xFEPsVector = Vector<double>.Build.Dense(new double[] { 0.001, 0.025, 0.025, 0.0 }); //FEPs - Finite Element Points
+        private static Vector<double> xFEPsVector = Vector<double>.Build.Dense(new double[] { 0.0, 0.025, 0.025, 0.0 }); //FEPs - Finite Element Points
         private static Vector<double> yFEPsVector = Vector<double>.Build.Dense(new double[] { 0.0, 0.0, 0.025, 0.025 }); //FEPs - Finite Element Points
         private static Vector<double> ksiVector = Vector<double>.Build.Dense(4);
         private static Vector<double> etaVector = Vector<double>.Build.Dense(4);
@@ -205,7 +205,7 @@ namespace MES_CP
             double[] actualdNdKsidNdEtaArray = new double[2];
             Matrix<double> actualInverseJacobianMatrix = Matrix<double>.Build.Dense(2, 2, actualInverseJacobianArray);
             Matrix<double> actualdNdKsidNdEtaMatrix = Matrix<double>.Build.Dense(2, 1, actualdNdKsidNdEtaArray);
-            Matrix<double> actualdNdxdNdyMatrix = Matrix<double>.Build.Dense(2, 2, actualInverseJacobianArray);
+            Matrix<double> actualdNdxdNdyMatrix = Matrix<double>.Build.Dense(2, 1);
 
             for (int i = 0; i < 4; i++) //i <- punkt całkowania / integration point
             {
