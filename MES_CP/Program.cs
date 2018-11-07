@@ -11,7 +11,7 @@ namespace MES_CP
     {
         private const double K = 30.0;
 
-        private static Vector<double> xFEPsVector = Vector<double>.Build.Dense(new double[] { 0.0, 0.025, 0.025, 0.0 }); //FEPs - Finite Element Points
+        private static Vector<double> xFEPsVector = Vector<double>.Build.Dense(new double[] { 0.001, 0.025, 0.025, 0.0 }); //FEPs - Finite Element Points
         private static Vector<double> yFEPsVector = Vector<double>.Build.Dense(new double[] { 0.0, 0.0, 0.025, 0.025 }); //FEPs - Finite Element Points
         private static Vector<double> ksiVector = Vector<double>.Build.Dense(4);
         private static Vector<double> etaVector = Vector<double>.Build.Dense(4);
@@ -32,7 +32,9 @@ namespace MES_CP
         private static Vector<double> jacobianDeterminantVector = Vector<double>.Build.Dense(4);
         private static Matrix<double> inverseJacobianMatrix = Matrix<double>.Build.Dense(4, 4);
 
-        /*  INVERS JACOBIAN MATRIX                                  JACOBIAN MATRIX    
+        /*  >> od lewej do prawej, z góry na dół <<
+
+            INVERS JACOBIAN MATRIX                                  JACOBIAN MATRIX    
         
                     pkt. całk.                                              pkt. całk.
             pochodne----------  dy/deta dy/dksi dx/deta dx/dksi     pochodne----------  dx/dksi dy/dksi dx/deta dy/deta
@@ -40,6 +42,7 @@ namespace MES_CP
                     2           J-1_2_2 J-1_1_2 J-1_2_1 J-1_1_1             2           J_1_1   J_1_2   J_2_1   J_2_2
                     3           J-1_2_2 J-1_1_2 J-1_2_1 J-1_1_1             3           J_1_1   J_1_2   J_2_1   J_2_2
                     4           J-1_2_2 J-1_1_2 J-1_2_1 J-1_1_1             4           J_1_1   J_1_2   J_2_1   J_2_2
+
         */
 
         private static Matrix<double> dNdxMatrix = Matrix<double>.Build.Dense(4, 4);
@@ -92,9 +95,9 @@ namespace MES_CP
             Console.WriteLine($@"dx/dksi -> {dxdksiVector}");
             Console.WriteLine($@"dN/dksi -> {dNdksiMatrix}");
             Console.WriteLine($@"dN/deta -> {dNdksiMatrix}");
-            Console.WriteLine($@"Macierz Jacobiego -> {jacobianMatrix}");
+            Console.WriteLine($@"Macierz Jacobiego -> {jacobianMatrix.Transpose()}");
             Console.WriteLine($@"Jakobian -> {jacobianDeterminantVector}");
-            Console.WriteLine($@"Odwrocona macierz Jacobiego -> {inverseJacobianMatrix}");
+            Console.WriteLine($@"Odwrocona macierz Jacobiego -> {inverseJacobianMatrix.Transpose()}");
             Console.WriteLine($@"dN/dx -> {dNdxMatrix}");
             Console.WriteLine($@"dN/dy -> {dNdyMatrix}");
             for (int i = 0; i < 4; i++)
@@ -174,13 +177,11 @@ namespace MES_CP
             jacobianMatrix.SetColumn(3, dydetaVector);
         }
 
-        //Tu się dzieje coś nie tak w porównaniu do arkusza, przy podaniu elementu nieprostokątnego
-        //VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
         private static void CalculateInverseJacobianMatrix()
         {
             inverseJacobianMatrix.SetColumn(0, dydetaVector);
-            inverseJacobianMatrix.SetColumn(1, dydksiVector * -1);
-            inverseJacobianMatrix.SetColumn(2, dxdetaVector * -1);
+            inverseJacobianMatrix.SetColumn(1, -dydksiVector);
+            inverseJacobianMatrix.SetColumn(2, -dxdetaVector);
             inverseJacobianMatrix.SetColumn(3, dxdksiVector);
 
             double[] actualJacobianArray = new double[4];
@@ -188,13 +189,13 @@ namespace MES_CP
 
             for (int i = 0; i < 4; i++)
             {
-                actualJacobianArray[0] = dydetaVector[i];
-                actualJacobianArray[1] = -dxdetaVector[i];
-                actualJacobianArray[2] = -dydksiVector[i];
-                actualJacobianArray[3] = dxdksiVector[i];
+                actualJacobianArray[0] = dxdksiVector[i];
+                actualJacobianArray[1] = dxdetaVector[i];
+                actualJacobianArray[2] = dydksiVector[i];
+                actualJacobianArray[3] = dydetaVector[i];
 
                 jacobianDeterminantVector[i] = actualJacobianMatrix.Determinant();
-                inverseJacobianMatrix.SetRow(i, inverseJacobianMatrix.Row(i).Multiply(1.0 / jacobianDeterminantVector[i]));
+                inverseJacobianMatrix.SetRow(i, (1.0 / jacobianDeterminantVector[i]) * inverseJacobianMatrix.Row(i));
             }
         }
 
