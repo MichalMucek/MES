@@ -11,8 +11,8 @@ namespace MES_CP
     {
         private const double K = 30.0;
 
-        private static Vector<double> xFEPsVector = Vector<double>.Build.Dense(new double[] { 0.0, 0.025, 0.025, 0.0 }); //FEPs - Finite Element Points
-        private static Vector<double> yFEPsVector = Vector<double>.Build.Dense(new double[] { 0.0, 0.0, 0.025, 0.025 }); //FEPs - Finite Element Points
+        private static Vector<double> xFEPsVector = Vector<double>.Build.Dense(new[] { 0.0, 0.025, 0.025, 0.0 }); //FEPs - Finite Element Points
+        private static Vector<double> yFEPsVector = Vector<double>.Build.Dense(new[] { 0.0, 0.0, 0.025, 0.025 }); //FEPs - Finite Element Points
         private static Vector<double> ksiVector = Vector<double>.Build.Dense(4);
         private static Vector<double> etaVector = Vector<double>.Build.Dense(4);
         private static Matrix<double> shapeFunctionsNMatrix = Matrix<double>.Build.Dense(4, 4);
@@ -27,12 +27,28 @@ namespace MES_CP
         //*************************************************************************************************************//
         private static Matrix<double> dNdksiMatrix = Matrix<double>.Build.Dense(4, 4); //   {   dN/d(ksi)   }
         private static Matrix<double> dNdetaMatrix = Matrix<double>.Build.Dense(4, 4); //   {   dN/d(eta)   }
+        private static Matrix<double>[,] dNdksidNdetaMatrices = {
+            { Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1) },
+            { Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1) },
+            { Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1) },
+            { Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1) }
+        };
         //*************************************************************************************************************//
-        private static Matrix<double> jacobianMatrix = Matrix<double>.Build.Dense(4, 4);
+        private static Matrix<double>[] jacobianMatrices = {
+            Matrix<double>.Build.Dense(2, 2),
+            Matrix<double>.Build.Dense(2, 2),
+            Matrix<double>.Build.Dense(2, 2),
+            Matrix<double>.Build.Dense(2, 2)
+        };
         private static Vector<double> jacobianDeterminantVector = Vector<double>.Build.Dense(4);
-        private static Matrix<double> inverseJacobianMatrix = Matrix<double>.Build.Dense(4, 4);
+        private static Matrix<double>[] inverseJacobianMatrices = {
+            Matrix<double>.Build.Dense(2, 2),
+            Matrix<double>.Build.Dense(2, 2),
+            Matrix<double>.Build.Dense(2, 2),
+            Matrix<double>.Build.Dense(2, 2)
+        };
 
-        /*  >> od lewej do prawej, z góry na dół <<
+        /*  >> przełożone z PDF-a z Jakobianem, wiersz po wierszu <<
 
             INVERS JACOBIAN MATRIX                                  JACOBIAN MATRIX    
         
@@ -47,15 +63,20 @@ namespace MES_CP
 
         private static Matrix<double> dNdxMatrix = Matrix<double>.Build.Dense(4, 4);
         private static Matrix<double> dNdyMatrix = Matrix<double>.Build.Dense(4, 4);
-        private static Matrix<double>[] dNdxdNdxTMatrices = new Matrix<double>[4]
+        private static Matrix<double>[,] dNdxdNdyMatrices =
         {
+            { Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1) },
+            { Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1) },
+            { Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1) },
+            { Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1) }
+        };
+        private static Matrix<double>[] dNdxdNdxTMatrices = {
             Matrix<double>.Build.Dense(4, 4),
             Matrix<double>.Build.Dense(4, 4),
             Matrix<double>.Build.Dense(4, 4),
             Matrix<double>.Build.Dense(4, 4)
         };
-        private static Matrix<double>[] dNdydNdyTMatrices = new Matrix<double>[4]
-        {
+        private static Matrix<double>[] dNdydNdyTMatrices = {
             Matrix<double>.Build.Dense(4, 4),
             Matrix<double>.Build.Dense(4, 4),
             Matrix<double>.Build.Dense(4, 4),
@@ -75,11 +96,12 @@ namespace MES_CP
             ReadKsiEta();
             CalculateShapeFunctions4X4();
             CalculateIntegrationPoints();
-            CalculatePD_dNdKsi_dNdEta();
-            CalculateJacobianMatrix();
-            CalculateInverseJacobianMatrix();
+            Calculate_dNdksi_dNdeta_Matrices();
+            CalculateJaobianMatrices();
+            CalculateInverseJacobianMatrices();
             Calculate_dNdx_dNdy();
             Calculate_dNdxdNdxT_dNdydNdyT();
+            CalculateJacobianDeterminantVector();
             CalculateH();
 
             Console.WriteLine($@"x -> {xFEPsVector}");
@@ -95,9 +117,18 @@ namespace MES_CP
             Console.WriteLine($@"dx/dksi -> {dxdksiVector}");
             Console.WriteLine($@"dN/dksi -> {dNdksiMatrix}");
             Console.WriteLine($@"dN/deta -> {dNdksiMatrix}");
-            Console.WriteLine($@"Macierz Jacobiego -> {jacobianMatrix.Transpose()}");
+            for (int i = 0; i < 4; i++)
+                Console.WriteLine($@"Macierz Jacobiego [{i}] -> {jacobianMatrices[i]}");
             Console.WriteLine($@"Jakobian -> {jacobianDeterminantVector}");
-            Console.WriteLine($@"Odwrocona macierz Jacobiego -> {inverseJacobianMatrix.Transpose()}");
+            for (int i = 0; i < 4; i++)
+                Console.WriteLine($@"Odwrocona macierz Jacobiego [{i}] -> {inverseJacobianMatrices[i]}");
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    Console.WriteLine($@"[(dN/dx)(dN/dy)][{i + 1}, {j + 1}] -> {dNdxdNdyMatrices[i, j]}");
+                }
+            }
             Console.WriteLine($@"dN/dx -> {dNdxMatrix}");
             Console.WriteLine($@"dN/dy -> {dNdyMatrix}");
             for (int i = 0; i < 4; i++)
@@ -145,108 +176,81 @@ namespace MES_CP
             yFEIntgPsVector = shapeFunctionsNMatrix * yFEPsVector;
         }
 
-        private static void CalculatePD_dNdKsi_dNdEta() // dN/d(ksi)  dN/d(eta)
+        private static void Calculate_dNdksi_dNdeta_Matrices()
         {
             for (int i = 0; i < 4; i++)
             {
-                dNdksiMatrix[i, 0] = -0.25 * (1 - etaVector[i]);
-                dNdksiMatrix[i, 1] = 0.25 * (1 - etaVector[i]);
-                dNdksiMatrix[i, 2] = 0.25 * (1 + etaVector[i]);
-                dNdksiMatrix[i, 3] = -0.25 * (1 + etaVector[i]);
+                for (int j = 0; j < 4; j++)
+                {
+                    dNdksiMatrix[i, 0] = -0.25 * (1 - etaVector[i]);
+                    dNdksiMatrix[i, 1] = 0.25 * (1 - etaVector[i]);
+                    dNdksiMatrix[i, 2] = 0.25 * (1 + etaVector[i]);
+                    dNdksiMatrix[i, 3] = -0.25 * (1 + etaVector[i]);
 
-                dNdetaMatrix[i, 0] = -0.25 * (1 - ksiVector[i]);
-                dNdetaMatrix[i, 1] = -0.25 * (1 + ksiVector[i]);
-                dNdetaMatrix[i, 2] = 0.25 * (1 + ksiVector[i]);
-                dNdetaMatrix[i, 3] = 0.25 * (1 - ksiVector[i]);
+                    dNdetaMatrix[i, 0] = -0.25 * (1 - ksiVector[i]);
+                    dNdetaMatrix[i, 1] = -0.25 * (1 + ksiVector[i]);
+                    dNdetaMatrix[i, 2] = 0.25 * (1 + ksiVector[i]);
+                    dNdetaMatrix[i, 3] = 0.25 * (1 - ksiVector[i]);
+
+                    dNdksidNdetaMatrices[i, j][0, 0] = dNdksiMatrix[i, j];
+                    dNdksidNdetaMatrices[i, j][1, 0] = dNdetaMatrix[i, j];
+                }
             }
         }
 
-        private static void CalculateJacobianMatrix()
+        private static void CalculateJaobianMatrices()
         {
             for (int i = 0; i < 4; i++)
             {
-                dydetaVector[i] = dNdetaMatrix.Row(i) * yFEPsVector;
+                dxdksiVector[i] = dNdksiMatrix.Row(i) * xFEPsVector;
                 dydksiVector[i] = dNdksiMatrix.Row(i) * yFEPsVector;
                 dxdetaVector[i] = dNdetaMatrix.Row(i) * xFEPsVector;
-                dxdksiVector[i] = dNdksiMatrix.Row(i) * xFEPsVector;
-            }
+                dydetaVector[i] = dNdetaMatrix.Row(i) * yFEPsVector;
 
-            jacobianMatrix.SetColumn(0, dxdksiVector);
-            jacobianMatrix.SetColumn(1, dydksiVector);
-            jacobianMatrix.SetColumn(2, dxdetaVector);
-            jacobianMatrix.SetColumn(3, dydetaVector);
+                jacobianMatrices[i][0, 0] = dxdksiVector[i]; jacobianMatrices[i][0, 1] = dydksiVector[i];
+                jacobianMatrices[i][1, 0] = dxdetaVector[i]; jacobianMatrices[i][1, 1] = dydetaVector[i];
+            }
         }
 
-        private static void CalculateInverseJacobianMatrix()
+        private static void CalculateInverseJacobianMatrices()
         {
-            inverseJacobianMatrix.SetColumn(0, dydetaVector);
-            inverseJacobianMatrix.SetColumn(1, -dydksiVector);
-            inverseJacobianMatrix.SetColumn(2, -dxdetaVector);
-            inverseJacobianMatrix.SetColumn(3, dxdksiVector);
-
-            double[] actualJacobianArray = new double[4];
-            Matrix<double> actualJacobianMatrix = Matrix<double>.Build.Dense(2, 2, actualJacobianArray); //Macierz jest powiązana z tablicą, wczytywana kolumnami
-
             for (int i = 0; i < 4; i++)
-            {
-                actualJacobianArray[0] = dxdksiVector[i];
-                actualJacobianArray[1] = dxdetaVector[i];
-                actualJacobianArray[2] = dydksiVector[i];
-                actualJacobianArray[3] = dydetaVector[i];
-
-                jacobianDeterminantVector[i] = actualJacobianMatrix.Determinant();
-                inverseJacobianMatrix.SetRow(i, (1.0 / jacobianDeterminantVector[i]) * inverseJacobianMatrix.Row(i));
-            }
+                inverseJacobianMatrices[i] = jacobianMatrices[i].Inverse();
         }
 
         private static void Calculate_dNdx_dNdy()
         {
-            double[] actualInverseJacobianArray = new double[4];
-            double[] actualdNdKsidNdEtaArray = new double[2];
-            Matrix<double> actualInverseJacobianMatrix = Matrix<double>.Build.Dense(2, 2, actualInverseJacobianArray);
-            Matrix<double> actualdNdKsidNdEtaMatrix = Matrix<double>.Build.Dense(2, 1, actualdNdKsidNdEtaArray);
-            Matrix<double> actualdNdxdNdyMatrix = Matrix<double>.Build.Dense(2, 1);
-
             for (int i = 0; i < 4; i++) //i <- punkt całkowania / integration point
             {
-                actualInverseJacobianArray[0] = inverseJacobianMatrix[i, 0];
-                actualInverseJacobianArray[1] = inverseJacobianMatrix[i, 2];
-                actualInverseJacobianArray[2] = inverseJacobianMatrix[i, 1];
-                actualInverseJacobianArray[3] = inverseJacobianMatrix[i, 3];
-
                 for (int j = 0; j < 4; j++) //j <- funkcja kształtu / shape function
                 {
-                    actualdNdKsidNdEtaArray[0] = dNdksiMatrix[i, j];
-                    actualdNdKsidNdEtaArray[1] = dNdetaMatrix[i, j];
+                    dNdxdNdyMatrices[i, j] = inverseJacobianMatrices[i] * dNdksidNdetaMatrices[i, j];
 
-                    actualdNdxdNdyMatrix = actualInverseJacobianMatrix * actualdNdKsidNdEtaMatrix;
-
-                    dNdxMatrix[i, j] = actualdNdxdNdyMatrix[0, 0];
-                    dNdyMatrix[i, j] = actualdNdxdNdyMatrix[1, 0];
+                    dNdxMatrix[i, j] = dNdxdNdyMatrices[i, j][0, 0];
+                    dNdyMatrix[i, j] = dNdxdNdyMatrices[i, j][1, 0];
                 }
             }
         }
 
         private static void Calculate_dNdxdNdxT_dNdydNdyT()
         {
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 4; i++) // Obliczenia w stylu Excel'owskim - czy da się prościej???
             {
                 dNdxdNdxTMatrices[i] = dNdxMatrix.Row(i).ToColumnMatrix() * dNdxMatrix.Row(i).ToRowMatrix();
                 dNdydNdyTMatrices[i] = dNdyMatrix.Row(i).ToColumnMatrix() * dNdyMatrix.Row(i).ToRowMatrix();
             }
         }
 
+        private static void CalculateJacobianDeterminantVector()
+        {
+            for (int i = 0; i < 4; i++)
+                jacobianDeterminantVector[i] = jacobianMatrices[i].Determinant();
+        }
+
         private static void CalculateH()
         {
-            Matrix<double>[] dNdxdNdxTPlusdNdydNdyTMatrices = new Matrix<double>[4];
-
-            for (int i = 0; i < 4; i++)
-            {
-                dNdxdNdxTPlusdNdydNdyTMatrices[i] =
-                    ((dNdxdNdxTMatrices[i] + dNdydNdyTMatrices[i]) * jacobianDeterminantVector[i]) * K;
-
-                hMatrix += dNdxdNdxTPlusdNdydNdyTMatrices[i];
-            }
+            for (int i = 0; i < 4; i++) // k(t) * ({dN/dx}{dN/dx}^T + {dN/dy}{dN/dy}^T) * Det(J)
+                hMatrix += K * (dNdxdNdxTMatrices[i] + dNdydNdyTMatrices[i]) * jacobianDeterminantVector[i];
         }
     }
 }

@@ -17,7 +17,7 @@ namespace MES_CP
             ids.Length -= 2;
             ids.Append("]");
 
-            return $@">>ELEMENT<< ID: {id} => {ids.ToString()}";
+            return $@">>ELEMENT<< ID: {id} => {ids}";
         }
     }
 }

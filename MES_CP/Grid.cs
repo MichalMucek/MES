@@ -23,7 +23,7 @@ namespace MES_CP
             {
                 for (int j = 0; j < dataSet.nH; j++, nodeId++)
                 {
-                    Node node = new Node()
+                    Node node = new Node
                     {
                         x = x0 + dx * i,
                         y = y0 + dy * j,
