@@ -63,7 +63,7 @@ namespace MES_CP
 
         private static Matrix<double> dNdxMatrix = Matrix<double>.Build.Dense(4, 4);
         private static Matrix<double> dNdyMatrix = Matrix<double>.Build.Dense(4, 4);
-        private static Matrix<double>[,] dNdxdNdyMatrices =
+        private static Matrix<double>[,] dNdxdNdyMatrices = //4x4
         {
             { Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1) },
             { Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1), Matrix<double>.Build.Dense(2, 1) },
@@ -92,6 +92,8 @@ namespace MES_CP
 
             Grid grid = new Grid();
             grid.Generate(dataSet);
+
+            Console.WriteLine(grid);
 
             ReadKsiEta();
             CalculateShapeFunctions4X4();

@@ -8,10 +8,11 @@ namespace MES_CP
         [JsonProperty("y")] public double y { get; set; }
         [JsonProperty("t0")] public double t0 { get; set; }
         [JsonProperty("id")] public int id { get; set; }
+        public bool isBoundry { get; set; }
 
         public override string ToString()
         {
-            return $@">>NODE<< ID: {id} => x: {x} | y: {y} | t0: {t0}";
+            return $@">>NODE<< ID: {id} => x: {x} | y: {y} | t0: {t0} | isBoundry: {isBoundry}";
         }
     }
 }
