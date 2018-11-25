@@ -17,18 +17,25 @@ namespace MES_CP
             double dy = dataSet.H / (dataSet.nH - 1);
             int nN = dataSet.nH * dataSet.nL;
             int nE = (dataSet.nH - 1) * (dataSet.nL - 1);
+            bool isBoundryNode = true;
 
             //Adding nodes
             for (int i = 0, nodeId = 1; i < dataSet.nL; i++)
             {
                 for (int j = 0; j < dataSet.nH; j++, nodeId++)
                 {
+                    if (i == 0 || j == 0 || i == dataSet.nL - 1 || j == dataSet.nH - 1)
+                        isBoundryNode = true;
+                    else
+                        isBoundryNode = false;
+
                     Node node = new Node
                     {
                         x = x0 + dx * i,
                         y = y0 + dy * j,
                         t0 = dataSet.t0,
-                        id = nodeId
+                        id = nodeId,
+                        isBoundry = isBoundryNode
                     };
 
                     Nodes.Add(node); 
