@@ -4,15 +4,15 @@ namespace MES_CP
 {
     public struct Node
     {
-        [JsonProperty("x")] public double x { get; set; }
-        [JsonProperty("y")] public double y { get; set; }
-        [JsonProperty("t0")] public double t0 { get; set; }
-        [JsonProperty("id")] public int id { get; set; }
-        public bool isBoundry { get; set; }
+        [JsonProperty("X")] public double X { get; set; }
+        [JsonProperty("Y")] public double Y { get; set; }
+        [JsonProperty("T0")] public double T0 { get; set; }
+        [JsonProperty("Id")] public int Id { get; set; }
+        public bool IsBoundry { get; set; }
 
         public override string ToString()
         {
-            return $@">>NODE<< ID: {id} => x: {x} | y: {y} | t0: {t0} | isBoundry: {isBoundry}";
+            return $">>NODE<< ID: {Id} => X: {X} | Y: {Y} | T0: {T0} | IsBoundry: {IsBoundry}";
         }
     }
 }

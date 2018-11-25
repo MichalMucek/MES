@@ -1,23 +1,37 @@
 ﻿using System.Text;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace MES_CP
 {
     class Element
     {
-        public Node[] Nodes { get; set; } = new Node[4];
-        public int id { get; set; }
+        public Node[] Nodes { get; set; }
+        public int Id { get; set; }
+        public Matrix<double> H { get; set; }
+
+        public Element(Node[] nodes, int id)
+        {
+            Nodes = nodes;
+            Id = id;
+            H = Calculations.H.Calculate(this);
+        }
 
         public override string ToString()
         {
-            StringBuilder ids = new StringBuilder("[");
+            StringBuilder stringBuilder = new StringBuilder("[");
 
             foreach (var node in Nodes)
-                ids.Append($@"{node.id}, ");
+                stringBuilder.Append($"{node.Id}, ");
 
-            ids.Length -= 2;
-            ids.Append("]");
+            stringBuilder.Length -= 2;
+            stringBuilder.Append("]\n");
 
-            return $@">>ELEMENT<< ID: {id} => {ids}";
+            foreach (var node in Nodes)
+                stringBuilder.AppendLine(node.ToString());
+
+            stringBuilder.Append($">>LOCAL MATRIX [H]<<\n{H.ToMatrixString(4, 4)}");
+
+            return $">>ELEMENT<< ID: {Id} => {stringBuilder}";
         }
     }
 }

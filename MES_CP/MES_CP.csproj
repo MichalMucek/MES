@@ -53,7 +53,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataSet.cs" />
+    <Compile Include="Calculations\H.cs" />
+    <Compile Include="InitialData.cs" />
     <Compile Include="Element.cs" />
     <Compile Include="Grid.cs" />
     <Compile Include="Node.cs" />
@@ -62,11 +63,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="dataSet.json" />
+    <None Include="initialData.json" />
     <None Include="ksi_eta.json" />
-    <None Include="node2.json" />
     <None Include="packages.config" />
-    <None Include="node.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions />
