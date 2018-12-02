@@ -13,6 +13,7 @@ namespace MES_CP
         private List<Node> Nodes { get; } = new List<Node>();
         private List<Element> Elements { get; } = new List<Element>();
         private Matrix<double> H { get; set; }
+        private Matrix<double> C { get; set; }
 
         public Grid(string initailDataFilePath) => GenerateFromInitialDataFile(initailDataFilePath);
         public Grid(InitialData initialData) => GenerateFromInitialDataObject(initialData);
@@ -38,7 +39,7 @@ namespace MES_CP
 
             AddNodes(x0, y0, dx, dy, nL, nH, t0);
             AddElements(elementsCount, nH);
-            GenerateH(nodesCount);
+            GenerateHAndC(nodesCount);
         }
 
         private void AddNodes(double x0, double y0, double dx, double dy, int nL, int nH, double t0)
@@ -89,20 +90,22 @@ namespace MES_CP
             }
         }
 
-        private void GenerateH(int nodesCount)
+        private void GenerateHAndC(int nodesCount)
         {
             H = Matrix<double>.Build.Dense(nodesCount, nodesCount);
+            C = Matrix<double>.Build.Dense(nodesCount, nodesCount);
 
             foreach (var element in Elements)
             {
-                Matrix<double> elementH = element.H; 
-
                 for (int i = 0; i < 4; i++)
                 {
                     for (int j = i; j < 4; j++)
                     {
-                        H[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] = elementH[i, j];
-                        H[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] = elementH[j, i];
+                        H[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] = element.H[i, j];
+                        H[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] = element.H[j, i];
+
+                        C[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] = element.C[i, j];
+                        C[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] = element.C[j, i];
                     }
                 }
             }
@@ -115,7 +118,8 @@ namespace MES_CP
             foreach (var element in Elements)
                 stringBuilder.Append($"{element}\n");
 
-            stringBuilder.Append($">>GLOBAL MATRIX [H]<<\n{H.ToMatrixString(Nodes.Last().Id, Nodes.Last().Id)}");
+            stringBuilder.Append($">>GLOBAL MATRIX [H]<<\n{H.ToMatrixString(Nodes.Last().Id, Nodes.Last().Id)}\n");
+            stringBuilder.Append($">>GLOBAL MATRIX [C]<<\n{C.ToMatrixString(Nodes.Last().Id, Nodes.Last().Id)}");
 
             return stringBuilder.ToString();
         }

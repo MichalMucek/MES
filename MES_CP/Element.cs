@@ -8,12 +8,14 @@ namespace MES_CP
         public Node[] Nodes { get; set; }
         public int Id { get; set; }
         public Matrix<double> H { get; set; }
+        public Matrix<double> C { get; set; }
 
         public Element(Node[] nodes, int id)
         {
             Nodes = nodes;
             Id = id;
-            H = Calculations.H.Calculate(this);
+            H = Calculations.HMatrix.Calculate(this);
+            C = Calculations.CMatrix.Calculate();
         }
 
         public override string ToString()
@@ -30,6 +32,7 @@ namespace MES_CP
                 stringBuilder.AppendLine(node.ToString());
 
             stringBuilder.Append($">>LOCAL MATRIX [H]<<\n{H.ToMatrixString(4, 4)}");
+            stringBuilder.Append($">>LOCAL MATRIX [C]<<\n{C.ToMatrixString(4, 4)}");
 
             return $">>ELEMENT<< ID: {Id} => {stringBuilder}";
         }

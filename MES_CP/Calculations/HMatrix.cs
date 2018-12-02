@@ -7,7 +7,7 @@ using org.mariuszgromada.math.mxparser;
 
 namespace MES_CP.Calculations
 {
-    static class H
+    static class HMatrix
     {
         private static readonly double K = 30.0;
 
@@ -15,7 +15,7 @@ namespace MES_CP.Calculations
         private static Vector<double> yFEPsVector = Vector<double>.Build.Dense(4); //FEPs - Finite Element Points
         private static Vector<double> ksiVector = Vector<double>.Build.Dense(4);
         private static Vector<double> etaVector = Vector<double>.Build.Dense(4);
-        private static Matrix<double> shapeFunctionsNMatrix = Matrix<double>.Build.Dense(4, 4);
+        public static Matrix<double> shapeFunctionsNMatrix { get; } = Matrix<double>.Build.Dense(4, 4);
         private static Vector<double> xFEIntgPsVector = Vector<double>.Build.Dense(4); //FEIntgPs - Finite Element Integration Points
         private static Vector<double> yFEIntgPsVector = Vector<double>.Build.Dense(4); //FEIntgPs - Finite Element Integration Points
 
@@ -40,7 +40,7 @@ namespace MES_CP.Calculations
             Matrix<double>.Build.Dense(2, 2),
             Matrix<double>.Build.Dense(2, 2)
         };
-        private static Vector<double> jacobianDeterminantVector = Vector<double>.Build.Dense(4);
+        public static Vector<double> jacobianDeterminantVector { get; } = Vector<double>.Build.Dense(4);
         private static Matrix<double>[] inverseJacobianMatrices = {
             Matrix<double>.Build.Dense(2, 2),
             Matrix<double>.Build.Dense(2, 2),
