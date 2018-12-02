@@ -53,7 +53,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Calculations\H.cs" />
+    <Compile Include="Calculations\CMatrix.cs" />
+    <Compile Include="Calculations\HMatrix.cs" />
     <Compile Include="InitialData.cs" />
     <Compile Include="Element.cs" />
     <Compile Include="Grid.cs" />
