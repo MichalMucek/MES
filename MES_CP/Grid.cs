@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using Newtonsoft.Json.Linq;
 
@@ -10,9 +9,11 @@ namespace MES_CP
 {
     class Grid
     {
+        public InitialData InitialData { get; private set; }
         private List<Node> Nodes { get; } = new List<Node>();
         private List<Element> Elements { get; } = new List<Element>();
         private Matrix<double> H { get; set; }
+        private Matrix<double> H_BC { get; set; }
         private Matrix<double> C { get; set; }
 
         public Grid(string initailDataFilePath) => GenerateFromInitialDataFile(initailDataFilePath);
@@ -21,9 +22,9 @@ namespace MES_CP
         private void GenerateFromInitialDataFile(string initailDataFilePath)
         {
             JObject initialDataJObject = JObject.Parse(File.ReadAllText(initailDataFilePath));
-            InitialData initialData = initialDataJObject.ToObject<InitialData>();
+            InitialData = initialDataJObject.ToObject<InitialData>();
 
-            GenerateFromInitialDataObject(initialData);
+            GenerateFromInitialDataObject(InitialData);
         }
 
         private void GenerateFromInitialDataObject(InitialData initialData)
@@ -39,7 +40,7 @@ namespace MES_CP
 
             AddNodes(x0, y0, dx, dy, nL, nH, t0);
             AddElements(elementsCount, nH);
-            GenerateHAndC(nodesCount);
+            GenerateGlobalMatrices(nodesCount);
         }
 
         private void AddNodes(double x0, double y0, double dx, double dy, int nL, int nH, double t0)
@@ -61,7 +62,7 @@ namespace MES_CP
                         Y = y0 + dy * j,
                         T0 = t0,
                         Id = nodeId,
-                        IsBoundry = isBoundryNode
+                        IsBoundary = isBoundryNode
                     };
 
                     Nodes.Add(node);
@@ -82,7 +83,7 @@ namespace MES_CP
                         Nodes[j + 1]
                     };
 
-                    Element element = new Element(elementNodes, id);
+                    Element element = new Element(elementNodes, id, InitialData);
 
                     Elements.Add(element);
                     id++;
@@ -90,9 +91,10 @@ namespace MES_CP
             }
         }
 
-        private void GenerateHAndC(int nodesCount)
+        private void GenerateGlobalMatrices(int nodesCount)
         {
             H = Matrix<double>.Build.Dense(nodesCount, nodesCount);
+            H_BC = Matrix<double>.Build.Dense(nodesCount, nodesCount);
             C = Matrix<double>.Build.Dense(nodesCount, nodesCount);
 
             foreach (var element in Elements)
@@ -103,6 +105,9 @@ namespace MES_CP
                     {
                         H[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] = element.H[i, j];
                         H[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] = element.H[j, i];
+
+                        H_BC[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] = element.H_BC[i, j];
+                        H_BC[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] = element.H_BC[j, i];
 
                         C[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] = element.C[i, j];
                         C[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] = element.C[j, i];
@@ -119,6 +124,7 @@ namespace MES_CP
                 stringBuilder.Append($"{element}\n");
 
             stringBuilder.Append($">>GLOBAL MATRIX [H]<<\n{H.ToMatrixString(Nodes.Last().Id, Nodes.Last().Id)}\n");
+            stringBuilder.Append($">>GLOBAL MATRIX [H_BC]<<\n{H_BC.ToMatrixString(Nodes.Last().Id, Nodes.Last().Id)}\n");
             stringBuilder.Append($">>GLOBAL MATRIX [C]<<\n{C.ToMatrixString(Nodes.Last().Id, Nodes.Last().Id)}");
 
             return stringBuilder.ToString();
