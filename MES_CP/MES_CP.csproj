@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Calculations\CMatrix.cs" />
+    <Compile Include="Calculations\HMatricBC.cs" />
     <Compile Include="Calculations\HMatrix.cs" />
     <Compile Include="InitialData.cs" />
     <Compile Include="Element.cs" />
@@ -64,9 +65,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="initialData.json" />
-    <None Include="ksi_eta.json" />
+    <None Include="data\initialData.json" />
+    <None Include="data\ksi_eta.json" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\ksi_eta_BC.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions />
