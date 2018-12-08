@@ -15,6 +15,7 @@ namespace MES_CP
         private Matrix<double> H { get; set; }
         private Matrix<double> H_BC { get; set; }
         private Matrix<double> C { get; set; }
+        private Vector<double> P { get; set; }
 
         public Grid(string initailDataFilePath) => GenerateFromInitialDataFile(initailDataFilePath);
         public Grid(InitialData initialData) => GenerateFromInitialDataObject(initialData);
@@ -40,7 +41,7 @@ namespace MES_CP
 
             AddNodes(x0, y0, dx, dy, nL, nH, t0);
             AddElements(elementsCount, nH);
-            GenerateGlobalMatrices(nodesCount);
+            GenerateGlobalMatricesAndVectors(nodesCount);
         }
 
         private void AddNodes(double x0, double y0, double dx, double dy, int nL, int nH, double t0)
@@ -91,11 +92,12 @@ namespace MES_CP
             }
         }
 
-        private void GenerateGlobalMatrices(int nodesCount)
+        private void GenerateGlobalMatricesAndVectors(int nodesCount)
         {
             H = Matrix<double>.Build.Dense(nodesCount, nodesCount);
             H_BC = Matrix<double>.Build.Dense(nodesCount, nodesCount);
             C = Matrix<double>.Build.Dense(nodesCount, nodesCount);
+            P = Vector<double>.Build.Dense(nodesCount);
 
             foreach (var element in Elements)
             {
@@ -111,6 +113,8 @@ namespace MES_CP
 
                         C[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] = element.C[i, j];
                         C[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] = element.C[j, i];
+
+                        P[element.Nodes[i].Id - 1] = element.P[i];
                     }
                 }
             }
@@ -125,7 +129,8 @@ namespace MES_CP
 
             stringBuilder.Append($">>GLOBAL MATRIX [H]<<\n{H.ToMatrixString(Nodes.Last().Id, Nodes.Last().Id)}\n");
             stringBuilder.Append($">>GLOBAL MATRIX [H_BC]<<\n{H_BC.ToMatrixString(Nodes.Last().Id, Nodes.Last().Id)}\n");
-            stringBuilder.Append($">>GLOBAL MATRIX [C]<<\n{C.ToMatrixString(Nodes.Last().Id, Nodes.Last().Id)}");
+            stringBuilder.Append($">>GLOBAL MATRIX [C]<<\n{C.ToMatrixString(Nodes.Last().Id, Nodes.Last().Id)}\n");
+            stringBuilder.Append(">>GLOBAL VECTOR {P}<<\n" + P.ToRowMatrix().ToMatrixString(1, Nodes.Last().Id));
 
             return stringBuilder.ToString();
         }

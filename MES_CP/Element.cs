@@ -12,6 +12,7 @@ namespace MES_CP
         public Matrix<double> H { get; set; }
         public Matrix<double> H_BC { get; set; }
         public Matrix<double> C { get; set; }
+        public Vector<double> P { get; set; }
         public bool[] BoundarySides { get; set; } = new bool[4];
         public double[] SidesLengths { get; set; } = new double[4];
 
@@ -25,6 +26,7 @@ namespace MES_CP
             H = Calculations.HMatrix.Calculate(this, initialData.Conductivity);
             H_BC = Calculations.HMatricBC.Calculate(this);
             C = Calculations.CMatrix.Calculate(initialData.SpecificHeat, initialData.Density);
+            P = Calculations.PVector.Calculate(this);
         }
 
         private void CheckBoundarySides()
@@ -69,6 +71,7 @@ namespace MES_CP
             stringBuilder.Append($">>LOCAL MATRIX [H]<<\n{H.ToMatrixString(4, 4)}");
             stringBuilder.Append($">>LOCAL MATRIX [H_BC]<<\n{H_BC.ToMatrixString(4, 4)}");
             stringBuilder.Append($">>LOCAL MATRIX [C]<<\n{C.ToMatrixString(4, 4)}");
+            stringBuilder.Append(">>LOCAL VECTOR {P}\n" + P.ToVectorString(4, 80));
 
             return $">>ELEMENT<< ID: {Id} => {stringBuilder}";
         }

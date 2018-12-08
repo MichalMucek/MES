@@ -5,7 +5,7 @@ using org.mariuszgromada.math.mxparser;
 
 namespace MES_CP.Calculations
 {
-    internal static class HMatricBC
+    static class PVector
     {
         private static Vector<double>[] ksiVectors =
         {
@@ -31,36 +31,27 @@ namespace MES_CP.Calculations
             Matrix<double>.Build.Dense(2, 4)
         };
 
-        private static Matrix<double>[] nvecNvecTdSMatrices = // {N}*{N}^T
+        private static Vector<double> sumOfNvecdSVector;
+
+        public static Vector<double> Calculate(Element element)
         {
-            Matrix<double>.Build.Dense(4, 4),
-            Matrix<double>.Build.Dense(4, 4),
-            Matrix<double>.Build.Dense(4, 4),
-            Matrix<double>.Build.Dense(4, 4)
-        };
-
-        private static Matrix<double> sumOfNvecNvecTdSMatrix = Matrix<double>.Build.Dense(4, 4);
-
-
-        public static Matrix<double> Calculate(Element element)
-        {
-            var hBCMatrix = Matrix<double>.Build.Dense(4, 4);
+            var pVector = Vector<double>.Build.Dense(4);
             var alpha = element.InitialData.Alpha;
+            var ambientTemperature = element.InitialData.AmbientTemperature;
 
             ReadKsiEta();
             CalculateShapeFunctions();
-            CalculateNvecNvecTdS(element.SidesLengths);
-            CalculateSumOfNvecNvecTdS(element.BoundarySides);
+            CalculateSumOfNvecdS(element.SidesLengths, element.BoundarySides);
 
-            hBCMatrix = alpha * sumOfNvecNvecTdSMatrix;
+            pVector = -(alpha * sumOfNvecdSVector * ambientTemperature);
 
-            return hBCMatrix;
+            return pVector;
         }
 
         private static void ReadKsiEta()
         {
             JObject ksi_eta_BC_JObject = JObject.Parse(File.ReadAllText(@"..\..\data\ksi_eta_BC.json"));
-            JArray sidesJArray = (JArray) ksi_eta_BC_JObject["Side"];
+            JArray sidesJArray = (JArray)ksi_eta_BC_JObject["Side"];
             string[,] ksiStrings = new string[4, 2];
             string[,] etaStrings = new string[4, 2];
 
@@ -103,21 +94,18 @@ namespace MES_CP.Calculations
             }
         }
 
-        private static void CalculateNvecNvecTdS(double[] sidesLengths)
+        private static void CalculateSumOfNvecdS(double[] sideLengths, bool[] boundarySides)
         {
-            for (int i = 0; i < 4; i++) //Side
+            sumOfNvecdSVector = Vector<double>.Build.Dense(4);
+
+            for (int i = 0; i < 4; i++)
             {
-                nvecNvecTdSMatrices[i] = shapeFunctionsMatrices[i].Transpose() * shapeFunctionsMatrices[i];
-                nvecNvecTdSMatrices[i] *= sidesLengths[i] / 2;
+                if (boundarySides[i])
+                {
+                    sumOfNvecdSVector += (shapeFunctionsMatrices[i].Row(0) + shapeFunctionsMatrices[i].Row(1)) *
+                                         (sideLengths[i] / 2);
+                }
             }
-        }
-
-        private static void CalculateSumOfNvecNvecTdS(bool[] boundarySides)
-        {
-            sumOfNvecNvecTdSMatrix = Matrix<double>.Build.Dense(4, 4);
-
-            for (int i = 0; i < 4; i++) //Side
-                if (boundarySides[i]) sumOfNvecNvecTdSMatrix += nvecNvecTdSMatrices[i];
         }
     }
 }
