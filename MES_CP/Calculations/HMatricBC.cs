@@ -23,7 +23,7 @@ namespace MES_CP.Calculations
             Vector<double>.Build.Dense(2)
         };
 
-        private static Matrix<double>[] shapeFunctionsMatrices =
+        public static Matrix<double>[] ShapeFunctionsMatrices { get; }=
         {
             Matrix<double>.Build.Dense(2, 4),
             Matrix<double>.Build.Dense(2, 4),
@@ -95,10 +95,10 @@ namespace MES_CP.Calculations
             {
                 for (int j = 0; j < 2; j++) //Node
                 {
-                    shapeFunctionsMatrices[i][j, 0] = 0.25 * (1 - ksiVectors[i][j]) * (1 - etaVectors[i][j]); //N1
-                    shapeFunctionsMatrices[i][j, 1] = 0.25 * (1 + ksiVectors[i][j]) * (1 - etaVectors[i][j]); //N2
-                    shapeFunctionsMatrices[i][j, 2] = 0.25 * (1 + ksiVectors[i][j]) * (1 + etaVectors[i][j]); //N3
-                    shapeFunctionsMatrices[i][j, 3] = 0.25 * (1 - ksiVectors[i][j]) * (1 + etaVectors[i][j]); //N4
+                    ShapeFunctionsMatrices[i][j, 0] = 0.25 * (1 - ksiVectors[i][j]) * (1 - etaVectors[i][j]); //N1
+                    ShapeFunctionsMatrices[i][j, 1] = 0.25 * (1 + ksiVectors[i][j]) * (1 - etaVectors[i][j]); //N2
+                    ShapeFunctionsMatrices[i][j, 2] = 0.25 * (1 + ksiVectors[i][j]) * (1 + etaVectors[i][j]); //N3
+                    ShapeFunctionsMatrices[i][j, 3] = 0.25 * (1 - ksiVectors[i][j]) * (1 + etaVectors[i][j]); //N4
                 }
             }
         }
@@ -107,7 +107,7 @@ namespace MES_CP.Calculations
         {
             for (int i = 0; i < 4; i++) //Side
             {
-                nvecNvecTdSMatrices[i] = shapeFunctionsMatrices[i].Transpose() * shapeFunctionsMatrices[i];
+                nvecNvecTdSMatrices[i] = ShapeFunctionsMatrices[i].Transpose() * ShapeFunctionsMatrices[i];
                 nvecNvecTdSMatrices[i] *= sidesLengths[i] / 2;
             }
         }

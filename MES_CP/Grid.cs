@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,10 +13,15 @@ namespace MES_CP
         public InitialData InitialData { get; private set; }
         private List<Node> Nodes { get; } = new List<Node>();
         private List<Element> Elements { get; } = new List<Element>();
+        private int nodesCount;
+        private int elementsCount;
         private Matrix<double> H { get; set; }
         private Matrix<double> H_BC { get; set; }
         private Matrix<double> C { get; set; }
         private Vector<double> P { get; set; }
+
+        private List<KeyValuePair<double, Vector<double>>> TimeTemperature { get; set; } =
+            new List<KeyValuePair<double, Vector<double>>>();
 
         public Grid(string initailDataFilePath) => GenerateFromInitialDataFile(initailDataFilePath);
         public Grid(InitialData initialData) => GenerateFromInitialDataObject(initialData);
@@ -36,12 +42,12 @@ namespace MES_CP
             int nL = initialData.NodesCountAlongTheLength;
             int nH = initialData.NodesCountAlongTheHeight;
             double t0 = initialData.T0;
-            int elementsCount = (initialData.NodesCountAlongTheHeight - 1) * (initialData.NodesCountAlongTheLength - 1);
-            int nodesCount = initialData.NodesCountAlongTheHeight * initialData.NodesCountAlongTheLength;
+            elementsCount = (initialData.NodesCountAlongTheHeight - 1) * (initialData.NodesCountAlongTheLength - 1);
+            nodesCount = initialData.NodesCountAlongTheHeight * initialData.NodesCountAlongTheLength;
 
             AddNodes(x0, y0, dx, dy, nL, nH, t0);
-            AddElements(elementsCount, nH);
-            GenerateGlobalMatricesAndVectors(nodesCount);
+            AddElements(nH);
+            GenerateGlobalMatricesAndVectors();
         }
 
         private void AddNodes(double x0, double y0, double dx, double dy, int nL, int nH, double t0)
@@ -71,7 +77,7 @@ namespace MES_CP
             }
         }
 
-        private void AddElements(int elementsCount, int nH)
+        private void AddElements(int nH)
         {
             for (int id = 1, j = 0; id <= elementsCount; j++)
             {
@@ -92,12 +98,13 @@ namespace MES_CP
             }
         }
 
-        private void GenerateGlobalMatricesAndVectors(int nodesCount)
+        private void GenerateGlobalMatricesAndVectors()
         {
             H = Matrix<double>.Build.Dense(nodesCount, nodesCount);
             H_BC = Matrix<double>.Build.Dense(nodesCount, nodesCount);
             C = Matrix<double>.Build.Dense(nodesCount, nodesCount);
             P = Vector<double>.Build.Dense(nodesCount);
+
 
             foreach (var element in Elements)
             {
@@ -105,18 +112,48 @@ namespace MES_CP
                 {
                     for (int j = i; j < 4; j++)
                     {
-                        H[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] = element.H[i, j];
-                        H[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] = element.H[j, i];
-
-                        H_BC[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] = element.H_BC[i, j];
-                        H_BC[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] = element.H_BC[j, i];
-
-                        C[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] = element.C[i, j];
-                        C[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] = element.C[j, i];
-
-                        P[element.Nodes[i].Id - 1] = element.P[i];
+                        H[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] += element.H[i, j];
+                        H_BC[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] += element.H_BC[i, j];
+                        C[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] += element.C[i, j];
+                        
+                        if (i != j)
+                        {
+                            H[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] += element.H[j, i];
+                            H_BC[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] += element.H_BC[j, i];
+                            C[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] += element.C[j, i];
+                        }
                     }
+
+                    P[element.Nodes[i].Id - 1] += element.P[i];
                 }
+            }
+        }
+
+        public void RunSimulation()
+        {
+            var hHatMatrix = Matrix<double>.Build.Dense(nodesCount, nodesCount);
+            var pHatVector = Vector<double>.Build.Dense(elementsCount);
+            var t0Vector = Vector<double>.Build.Dense(nodesCount, InitialData.T0);
+            var tVector = Vector<double>.Build.Dense(nodesCount);
+            var dTau = InitialData.SimulationTimeStep;
+
+            H += H_BC;
+            hHatMatrix = H + (C / dTau);
+            Console.WriteLine($">>MATRIX [^H^]<<\n{hHatMatrix.ToMatrixString(nodesCount, nodesCount)}");
+
+            for (double passedTime = 0.0, i = 0; passedTime < InitialData.SimulationTime; passedTime += dTau, i++)
+            {
+                pHatVector = (C / dTau) * t0Vector + P;
+                tVector = hHatMatrix.Inverse() * pHatVector;
+
+                Console.WriteLine($">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>ITERATION {(int) i}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+                Console.WriteLine(">>VECTOR {^P^}<<\n" + pHatVector.ToRowMatrix().ToMatrixString(1, nodesCount));
+                Console.WriteLine(">>VECTOR {t}<<\n" + tVector.ToRowMatrix().ToMatrixString(1, nodesCount));
+                Console.WriteLine($"t min: {tVector.Min()} | t max: {tVector.Max()}\n");
+
+                TimeTemperature.Add(new KeyValuePair<double, Vector<double>>(passedTime, tVector));
+
+                t0Vector = tVector;
             }
         }
 
@@ -127,10 +164,10 @@ namespace MES_CP
             foreach (var element in Elements)
                 stringBuilder.Append($"{element}\n");
 
-            stringBuilder.Append($">>GLOBAL MATRIX [H]<<\n{H.ToMatrixString(Nodes.Last().Id, Nodes.Last().Id)}\n");
-            stringBuilder.Append($">>GLOBAL MATRIX [H_BC]<<\n{H_BC.ToMatrixString(Nodes.Last().Id, Nodes.Last().Id)}\n");
-            stringBuilder.Append($">>GLOBAL MATRIX [C]<<\n{C.ToMatrixString(Nodes.Last().Id, Nodes.Last().Id)}\n");
-            stringBuilder.Append(">>GLOBAL VECTOR {P}<<\n" + P.ToRowMatrix().ToMatrixString(1, Nodes.Last().Id));
+            stringBuilder.Append($">>GLOBAL MATRIX [H]<<\n{H.ToMatrixString(nodesCount, nodesCount)}\n");
+            stringBuilder.Append($">>GLOBAL MATRIX [H_BC]<<\n{H_BC.ToMatrixString(nodesCount, nodesCount)}\n");
+            stringBuilder.Append($">>GLOBAL MATRIX [C]<<\n{C.ToMatrixString(nodesCount, nodesCount)}\n");
+            stringBuilder.Append(">>GLOBAL VECTOR {P}<<\n" + P.ToRowMatrix().ToMatrixString(1, nodesCount));
 
             return stringBuilder.ToString();
         }

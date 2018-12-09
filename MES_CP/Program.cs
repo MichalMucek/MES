@@ -13,6 +13,7 @@ namespace MES_CP
                 Grid grid = new Grid(@"..\..\data\initialData.json");
 
                 Console.WriteLine(grid);
+                grid.RunSimulation();
                 Console.ReadKey();
                 Console.Clear();
             }
