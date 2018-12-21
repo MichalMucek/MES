@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -58,18 +57,18 @@ namespace MES_CP
             {
                 for (int j = 0; j < nH; j++, nodeId++)
                 {
-                    bool isBoundryNode;
+                    bool isBounadryNode;
 
-                    if (i == 0 || j == 0 || i == nL - 1 || j == nH - 1) isBoundryNode = true;
-                    else isBoundryNode = false;
+                    if (i == 0 || j == 0 || i == nL - 1 || j == nH - 1) isBounadryNode = true;
+                    else isBounadryNode = false;
 
                     Node node = new Node
                     {
                         X = x0 + dx * i,
                         Y = y0 + dy * j,
-                        T0 = t0,
+                        InitialTemperature = t0,
                         Id = nodeId,
-                        IsBoundary = isBoundryNode
+                        IsBoundary = isBounadryNode
                     };
 
                     Nodes.Add(node);
@@ -93,16 +92,14 @@ namespace MES_CP
                     Element element = new Element(elementNodes, id, InitialData);
 
                     Elements.Add(element);
-                    id++;
-                }
 
-                if (id <= elementsCount)
-                {
                     var idLocal = id;
                     Program.MainForm.BeginInvoke((MethodInvoker) delegate
                     {
                         Program.MainForm.SimulationProgressBarValue = (idLocal * 100) / elementsCount;
                     });
+
+                    id++;
                 }
             }
         }
@@ -144,15 +141,16 @@ namespace MES_CP
             var pHatVector = Vector<double>.Build.Dense(elementsCount);
             var t0Vector = Vector<double>.Build.Dense(nodesCount, InitialData.InitialTemperature);
             var tVector = Vector<double>.Build.Dense(nodesCount);
-            var dTau = InitialData.SimulationTimeStep;
+            var timeStep = InitialData.SimulationTimeStep;
 
             H += H_BC;
-            hHatMatrix = H + (C / dTau);
+            hHatMatrix = H + (C / timeStep);
+            var hHatMatrixInverse = hHatMatrix.Inverse();
 
-            for (double passedTime = dTau, i = 0; passedTime <= InitialData.SimulationTime; passedTime += dTau, i++)
+            for (double passedTime = timeStep; passedTime <= InitialData.SimulationTime; passedTime += timeStep)
             {
-                pHatVector = (C / dTau) * t0Vector + P;
-                tVector = hHatMatrix.Inverse() * pHatVector;
+                pHatVector = (C / timeStep) * t0Vector + P;
+                tVector = hHatMatrixInverse * pHatVector;
 
                 var time = passedTime;
                 var minTemp = tVector.Min();

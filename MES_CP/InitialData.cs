@@ -13,7 +13,7 @@ namespace MES_CP
         [JsonProperty("AmbientTemperature")] public double AmbientTemperature { get; set; }
         [JsonProperty("SimulationTime")] public double SimulationTime { get; set; }
         [JsonProperty("SimulationTimeStep")] public double SimulationTimeStep { get; set; }
-        [JsonProperty("Alpha")] public double Alpha { get; set; }
+        [JsonProperty("ConvectionCoefficient")] public double ConvectionCoefficient { get; set; }
         [JsonProperty("SpecificHeat")] public double SpecificHeat { get; set; }
         [JsonProperty("Conductivity")] public double Conductivity { get; set; }
         [JsonProperty("Density")] public double Density { get; set; }
@@ -30,7 +30,7 @@ namespace MES_CP
             stringBuilder.AppendLine($"AmbientTemperature: {AmbientTemperature}");
             stringBuilder.AppendLine($"SimulationTime: {SimulationTime}");
             stringBuilder.AppendLine($"SimulationTimeStep: {SimulationTimeStep}");
-            stringBuilder.AppendLine($"Alpha: {Alpha}");
+            stringBuilder.AppendLine($"ConvectionCoefficient: {ConvectionCoefficient}");
             stringBuilder.AppendLine($"SpecificHeat: {SpecificHeat}");
             stringBuilder.AppendLine($"Conductivity: {Conductivity}");
             stringBuilder.AppendLine($"Density: {Density}");

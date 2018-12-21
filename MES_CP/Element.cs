@@ -7,7 +7,7 @@ namespace MES_CP
     class Element
     {
         public InitialData InitialData { get; }
-        public Node[] Nodes { get; set; }
+        public Node[] Nodes { get; }
         public int Id { get; set; }
         public Matrix<double> H { get; set; }
         public Matrix<double> H_BC { get; set; }

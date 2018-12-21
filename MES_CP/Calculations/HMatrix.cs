@@ -1,9 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 using MathNet.Numerics.LinearAlgebra;
-using Newtonsoft.Json.Linq;
-using org.mariuszgromada.math.mxparser;
 
 namespace MES_CP.Calculations
 {
@@ -11,8 +7,14 @@ namespace MES_CP.Calculations
     {
         private static Vector<double> xFEPsVector = Vector<double>.Build.Dense(4); //FEPs - Finite Element Points
         private static Vector<double> yFEPsVector = Vector<double>.Build.Dense(4); //FEPs - Finite Element Points
-        private static Vector<double> ksiVector = Vector<double>.Build.Dense(4);
-        private static Vector<double> etaVector = Vector<double>.Build.Dense(4);
+        private static Vector<double> ksiVector = Vector<double>.Build.DenseOfArray(new double[]
+        {
+            -1 / Math.Sqrt(3), 1 / Math.Sqrt(3), 1 / Math.Sqrt(3), -1 / Math.Sqrt(3),
+        });
+        private static Vector<double> etaVector = Vector<double>.Build.DenseOfArray(new double[]
+        {
+            -1 / Math.Sqrt(3), -1 / Math.Sqrt(3), 1 / Math.Sqrt(3), 1 / Math.Sqrt(3),
+        });
         public static Matrix<double> ShapeFunctionsNMatrix { get; } = Matrix<double>.Build.Dense(4, 4);
         private static Vector<double> xFEIntgPsVector = Vector<double>.Build.Dense(4); //FEIntgPs - Finite Element Integration Points
         private static Vector<double> yFEIntgPsVector = Vector<double>.Build.Dense(4); //FEIntgPs - Finite Element Integration Points
@@ -94,7 +96,6 @@ namespace MES_CP.Calculations
             var hMatrix = Matrix<double>.Build.Dense(4, 4);
 
             SetFiniteElementPoints(element.Nodes);
-            ReadKsiEta();
             CalculateShapeFunctions();
             CalculateIntegrationPoints();
             Calculate_dNdksi_dNdeta_Matrices();
@@ -116,25 +117,6 @@ namespace MES_CP.Calculations
             {
                 xFEPsVector[i] = nodes[i].X;
                 yFEPsVector[i] = nodes[i].Y;
-            }
-        }
-
-        private static void ReadKsiEta()
-        {
-            JObject ksi_eta_JObject = JObject.Parse(File.ReadAllText(@"..\..\data\ksi_eta.json"));
-            string[] ksiStrings = ((JArray)ksi_eta_JObject["ksi"]).Select(jv => (string)jv).ToArray();
-            string[] etaStrings = ((JArray)ksi_eta_JObject["eta"]).Select(jv => (string)jv).ToArray();
-
-            Expression ksiExpression = new Expression();
-            Expression etaExpression = new Expression();
-
-            for (int i = 0; i < 4; i++)
-            {
-                ksiExpression.setExpressionString(ksiStrings[i]);
-                etaExpression.setExpressionString(etaStrings[i]);
-
-                ksiVector[i] = ksiExpression.calculate();
-                etaVector[i] = etaExpression.calculate();
             }
         }
 

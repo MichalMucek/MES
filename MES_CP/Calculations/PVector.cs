@@ -1,7 +1,4 @@
-﻿using System.IO;
-using MathNet.Numerics.LinearAlgebra;
-using Newtonsoft.Json.Linq;
-using org.mariuszgromada.math.mxparser;
+﻿using MathNet.Numerics.LinearAlgebra;
 
 namespace MES_CP.Calculations
 {
@@ -12,7 +9,7 @@ namespace MES_CP.Calculations
         public static Vector<double> Calculate(Element element)
         {
             var pVector = Vector<double>.Build.Dense(4);
-            var alpha = element.InitialData.Alpha;
+            var alpha = element.InitialData.ConvectionCoefficient;
             var ambientTemperature = element.InitialData.AmbientTemperature;
 
             CalculateSumOfNvecdS(element.SidesLengths, element.BoundarySides);

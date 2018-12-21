@@ -7,7 +7,7 @@
   "SimulationTime": 500,
   "SimulationTimeStep": 50,
   "AmbientTemperature": 1200,
-  "Alpha": 300,
+  "ConvectionCoefficient": 300,
   "SpecificHeat": 700.0,
   "Conductivity": 25.0,
   "Density": 7800.0

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -28,6 +27,11 @@ namespace MES_CP
             richTextBox.AppendText($"{time}\t\t{minTemp}\t\t{maxTemp}\n");
         }
 
+        public void updateGridAndSimulationStatusLabel(string status)
+        {
+            toolStripGridAndSimulationStatusLabel.Text = status;
+        }
+
         private void setInitialData()
         {
             initialData = new InitialData
@@ -40,7 +44,7 @@ namespace MES_CP
                 AmbientTemperature = Double.Parse(ambientTemperatureTextBox.Text),
                 SimulationTime = Double.Parse(simulationTimeTextBox.Text),
                 SimulationTimeStep = Double.Parse(simulationTimeStepTextBox.Text),
-                Alpha = Double.Parse(alphaTextBox.Text),
+                ConvectionCoefficient = Double.Parse(alphaTextBox.Text),
                 SpecificHeat = Double.Parse(specificHeatTextBox.Text),
                 Conductivity = Double.Parse(conductivityTextBox.Text),
                 Density = Double.Parse(densityTextBox.Text)
@@ -96,7 +100,7 @@ namespace MES_CP
                 ambientTemperatureTextBox.Text = initialData.AmbientTemperature.ToString();
                 simulationTimeTextBox.Text = initialData.SimulationTime.ToString();
                 simulationTimeStepTextBox.Text = initialData.SimulationTimeStep.ToString();
-                alphaTextBox.Text = initialData.Alpha.ToString();
+                alphaTextBox.Text = initialData.ConvectionCoefficient.ToString();
                 specificHeatTextBox.Text = initialData.SpecificHeat.ToString();
                 conductivityTextBox.Text = initialData.Conductivity.ToString();
                 densityTextBox.Text = initialData.Density.ToString();
@@ -153,7 +157,6 @@ namespace MES_CP
             {
                 isSimulationRunning = false;
                 toolStripGridAndSimulationStatusLabel.Text = "Simulation is completed :)";
-                SimulationProgressBarValue = 100;
                 richTextBox.Text = grid.TimeTemperatureToString();
                 saveResultToTextFileButton.Enabled = true;
                 toolStripProgressBar.Visible = false;
