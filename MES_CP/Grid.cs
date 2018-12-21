@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 using MathNet.Numerics.LinearAlgebra;
 using Newtonsoft.Json.Linq;
 
@@ -20,15 +21,14 @@ namespace MES_CP
         private Matrix<double> C { get; set; }
         private Vector<double> P { get; set; }
 
-        private List<KeyValuePair<double, Vector<double>>> TimeTemperature { get; set; } =
-            new List<KeyValuePair<double, Vector<double>>>();
+        private List<KeyValuePair<double, Vector<double>>> TimeTemperature = new List<KeyValuePair<double, Vector<double>>>();
 
-        public Grid(string initailDataFilePath) => GenerateFromInitialDataFile(initailDataFilePath);
+        public Grid(string initialDataFilePath) => GenerateFromInitialDataFile(initialDataFilePath);
         public Grid(InitialData initialData) => GenerateFromInitialDataObject(initialData);
 
-        private void GenerateFromInitialDataFile(string initailDataFilePath)
+        private void GenerateFromInitialDataFile(string initialDataFilePath)
         {
-            JObject initialDataJObject = JObject.Parse(File.ReadAllText(initailDataFilePath));
+            JObject initialDataJObject = JObject.Parse(File.ReadAllText(initialDataFilePath));
             InitialData = initialDataJObject.ToObject<InitialData>();
 
             GenerateFromInitialDataObject(InitialData);
@@ -36,12 +36,14 @@ namespace MES_CP
 
         private void GenerateFromInitialDataObject(InitialData initialData)
         {
+            InitialData = initialData;
+
             double x0 = 0.0, y0 = 0.0; //na sztywno; później pomyśleć, czy będzie potrzeba wczytywać z JSON-a
             double dx = initialData.Length / (initialData.NodesCountAlongTheLength - 1);
             double dy = initialData.Height / (initialData.NodesCountAlongTheHeight - 1);
             int nL = initialData.NodesCountAlongTheLength;
             int nH = initialData.NodesCountAlongTheHeight;
-            double t0 = initialData.T0;
+            double t0 = initialData.InitialTemperature;
             elementsCount = (initialData.NodesCountAlongTheHeight - 1) * (initialData.NodesCountAlongTheLength - 1);
             nodesCount = initialData.NodesCountAlongTheHeight * initialData.NodesCountAlongTheLength;
 
@@ -58,10 +60,8 @@ namespace MES_CP
                 {
                     bool isBoundryNode;
 
-                    if (i == 0 || j == 0 || i == nL - 1 || j == nH - 1)
-                        isBoundryNode = true;
-                    else
-                        isBoundryNode = false;
+                    if (i == 0 || j == 0 || i == nL - 1 || j == nH - 1) isBoundryNode = true;
+                    else isBoundryNode = false;
 
                     Node node = new Node
                     {
@@ -79,21 +79,30 @@ namespace MES_CP
 
         private void AddElements(int nH)
         {
-            for (int id = 1, j = 0; id <= elementsCount; j++)
+            for (int id = 1, i = 0; id <= elementsCount; i++)
             {
-                if (Nodes[j].Id % nH != 0)
+                if (Nodes[i].Id % nH != 0)
                 {
                     Node[] elementNodes = {
-                        Nodes[j],
-                        Nodes[j + nH],
-                        Nodes[j + nH + 1],
-                        Nodes[j + 1]
+                        Nodes[i],
+                        Nodes[i + nH],
+                        Nodes[i + nH + 1],
+                        Nodes[i + 1]
                     };
 
                     Element element = new Element(elementNodes, id, InitialData);
 
                     Elements.Add(element);
                     id++;
+                }
+
+                if (id <= elementsCount)
+                {
+                    var idLocal = id;
+                    Program.MainForm.BeginInvoke((MethodInvoker) delegate
+                    {
+                        Program.MainForm.SimulationProgressBarValue = (idLocal * 100) / elementsCount;
+                    });
                 }
             }
         }
@@ -133,23 +142,26 @@ namespace MES_CP
         {
             var hHatMatrix = Matrix<double>.Build.Dense(nodesCount, nodesCount);
             var pHatVector = Vector<double>.Build.Dense(elementsCount);
-            var t0Vector = Vector<double>.Build.Dense(nodesCount, InitialData.T0);
+            var t0Vector = Vector<double>.Build.Dense(nodesCount, InitialData.InitialTemperature);
             var tVector = Vector<double>.Build.Dense(nodesCount);
             var dTau = InitialData.SimulationTimeStep;
 
             H += H_BC;
             hHatMatrix = H + (C / dTau);
-            Console.WriteLine($">>MATRIX [^H^]<<\n{hHatMatrix.ToMatrixString(nodesCount, nodesCount)}");
 
-            for (double passedTime = 0.0, i = 0; passedTime < InitialData.SimulationTime; passedTime += dTau, i++)
+            for (double passedTime = dTau, i = 0; passedTime <= InitialData.SimulationTime; passedTime += dTau, i++)
             {
                 pHatVector = (C / dTau) * t0Vector + P;
                 tVector = hHatMatrix.Inverse() * pHatVector;
 
-                Console.WriteLine($">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>ITERATION {(int) i}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-                Console.WriteLine(">>VECTOR {^P^}<<\n" + pHatVector.ToRowMatrix().ToMatrixString(1, nodesCount));
-                Console.WriteLine(">>VECTOR {t}<<\n" + tVector.ToRowMatrix().ToMatrixString(1, nodesCount));
-                Console.WriteLine($"t min: {tVector.Min()} | t max: {tVector.Max()}\n");
+                var time = passedTime;
+                var minTemp = tVector.Min();
+                var maxTemp = tVector.Max();
+                Program.MainForm.BeginInvoke((MethodInvoker) delegate
+                {
+                    Program.MainForm.SimulationProgressBarValue = (int)((time / InitialData.SimulationTime) * 100);
+                    Program.MainForm.AppendTimeTemperature(time, minTemp, maxTemp);
+                });
 
                 TimeTemperature.Add(new KeyValuePair<double, Vector<double>>(passedTime, tVector));
 
@@ -157,9 +169,25 @@ namespace MES_CP
             }
         }
 
+        public string TimeTemperatureToString()
+        {
+            StringBuilder stringBuilder = new StringBuilder($">>INITAIL DATA<<\n{InitialData.ToString()}\n");
+
+            stringBuilder.Append("Time[s]\tMinTemp[°C]\t\t\tMaxTemp[°C]\n");
+
+            foreach (var keyValuePair in TimeTemperature)
+            {
+                stringBuilder.Append($"{keyValuePair.Key}");
+                stringBuilder.Append($"\t\t{keyValuePair.Value.Min()}");
+                stringBuilder.Append($"\t\t{keyValuePair.Value.Max()}\n");
+            }
+
+            return stringBuilder.ToString();
+        }
+
         public override string ToString()
         {
-            StringBuilder stringBuilder = new StringBuilder("");
+            StringBuilder stringBuilder = new StringBuilder($">>INITAIL DATA<<\n{InitialData.ToString()}\n");
 
             foreach (var element in Elements)
                 stringBuilder.Append($"{element}\n");

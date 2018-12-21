@@ -1,8 +1,8 @@
 ﻿{
-  "Height": 0.100,
   "Length": 0.100,
-  "NodesCountAlongTheHeight": 4,
-  "NodesCountAlongTheLength": 4,
+  "Height": 0.100,
+  "NodesCountAlongTheLength": 14,
+  "NodesCountAlongTheHeight": 14,
   "InitialTemperature": 100,
   "SimulationTime": 500,
   "SimulationTimeStep": 50,

@@ -71,7 +71,7 @@ namespace MES_CP
             stringBuilder.Append($">>LOCAL MATRIX [H]<<\n{H.ToMatrixString(4, 4)}");
             stringBuilder.Append($">>LOCAL MATRIX [H_BC]<<\n{H_BC.ToMatrixString(4, 4)}");
             stringBuilder.Append($">>LOCAL MATRIX [C]<<\n{C.ToMatrixString(4, 4)}");
-            stringBuilder.Append(">>LOCAL VECTOR {P}\n" + P.ToVectorString(4, 80));
+            stringBuilder.Append(">>LOCAL VECTOR {P}\n" + P.ToRowMatrix().ToMatrixString(1, 4));
 
             return $">>ELEMENT<< ID: {Id} => {stringBuilder}";
         }
