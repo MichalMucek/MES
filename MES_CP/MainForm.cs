@@ -121,9 +121,9 @@ namespace MES_CP
             toolStripGridAndSimulationStatusLabel.Visible = true;
             toolStripProgressLabel.Visible = true;
 
-            richTextBox.Text = $">>INITAIL DATA<<\n{initialData.ToString()}\n";
-
             setInitialData();
+
+            richTextBox.Text = $">>INITAIL DATA<<\n{initialData.ToString()}\n";
 
             ThreadPool.QueueUserWorkItem(Async_LongRunningTask, "runSimulationButton_Click");
         }

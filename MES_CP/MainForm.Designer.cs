@@ -469,7 +469,7 @@
             this.Controls.Add(this.initialDataGroupBox);
             this.MinimumSize = new System.Drawing.Size(873, 546);
             this.Name = "MainForm";
-            this.Text = "MainForm";
+            this.Text = "FEM - Temperature distribution 2D";
             this.initialDataGroupBox.ResumeLayout(false);
             this.initialDataGroupBox.PerformLayout();
             this.statusStrip.ResumeLayout(false);
