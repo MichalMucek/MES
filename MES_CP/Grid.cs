@@ -143,9 +143,15 @@ namespace MES_CP
             var tVector = Vector<double>.Build.Dense(nodesCount);
             var timeStep = InitialData.SimulationTimeStep;
 
-            H += H_BC;
-            hHatMatrix = H + (C / timeStep);
-            var hHatMatrixInverse = hHatMatrix.Inverse();
+            hHatMatrix = (H + H_BC) + (C / timeStep);
+
+            //GUI update
+            Program.MainForm.BeginInvoke((MethodInvoker) delegate
+            {
+                Program.MainForm.UpdateGridAndSimulationStatusLabel("Simulation is about to start...");
+            });
+
+            var hHatMatrixInverse = hHatMatrix.Inverse(); //time consuming
 
             for (double passedTime = timeStep; passedTime <= InitialData.SimulationTime; passedTime += timeStep)
             {
@@ -155,10 +161,12 @@ namespace MES_CP
                 var time = passedTime;
                 var minTemp = tVector.Min();
                 var maxTemp = tVector.Max();
+
+                //GUI update
                 Program.MainForm.BeginInvoke((MethodInvoker) delegate
                 {
                     Program.MainForm.SimulationProgressBarValue = (int)((time / InitialData.SimulationTime) * 100);
-                    Program.MainForm.AppendTimeTemperature(time, minTemp, maxTemp);
+                    Program.MainForm.UpdateTimeTemperatureOnRichTextBox(time, minTemp, maxTemp);
                 });
 
                 TimeTemperature.Add(new KeyValuePair<double, Vector<double>>(passedTime, tVector));

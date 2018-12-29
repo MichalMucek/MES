@@ -22,12 +22,15 @@ namespace MES_CP
             }
         }
 
-        public void AppendTimeTemperature(double time, double minTemp, double maxTemp)
+        public void UpdateTimeTemperatureOnRichTextBox(double time, double minTemp, double maxTemp)
         {
-            richTextBox.AppendText($"{time}\t\t{minTemp}\t\t{maxTemp}\n");
+            richTextBox.Text = $">>INITAIL DATA<<\n{initialData.ToString()}\n\n" + 
+                               $"Time: {time} s\n" +
+                               $"Min. temperature: {minTemp}°C\n" +
+                               $"Max. temperature: {maxTemp}°C";
         }
 
-        public void updateGridAndSimulationStatusLabel(string status)
+        public void UpdateGridAndSimulationStatusLabel(string status)
         {
             toolStripGridAndSimulationStatusLabel.Text = status;
         }
@@ -143,8 +146,8 @@ namespace MES_CP
 
             this.Invoke((MethodInvoker) delegate
             {
-                toolStripGridAndSimulationStatusLabel.Text = "Grid has been created. Simulation is running...";
-                richTextBox.AppendText("Time[s]\tMinTemp[°C]\t\t\tMaxTemp[°C]\n");
+                toolStripGridAndSimulationStatusLabel.Text = "Simulation is running...";
+                //richTextBox.AppendText("Time[s]\tMinTemp[°C]\t\t\tMaxTemp[°C]\n");
                 saveGridDetailsToTextFileButton.Enabled = true;
                 SimulationProgressBarValue = 0;
                 richTextBox.Select();
