@@ -1,0 +1,1 @@
+{"Length":0.1,"Height":0.1,"NodesCountAlongTheLength":31,"NodesCountAlongTheHeight":31,"InitialTemperature":25.0,"AmbientTemperature":250.0,"SimulationTime":1400.0,"SimulationTimeStep":0.25,"ConvectionCoefficient":30.0,"SpecificHeat":830.0,"Conductivity":0.012,"Density":2500.0}
