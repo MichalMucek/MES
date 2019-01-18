@@ -24,7 +24,7 @@ namespace MES_CP
 
         public void UpdateTimeTemperatureOnRichTextBox(double time, double minTemp, double maxTemp)
         {
-            richTextBox.Text = $">>INITAIL DATA<<\n{initialData.ToString()}\n\n" + 
+            richTextBox.Text = $">>INITAIL DATA<<\n{initialData.ToString()}\n\n" +
                                $"Time: {time} s\n" +
                                $"Min. temperature: {minTemp}°C\n" +
                                $"Max. temperature: {maxTemp}°C";
@@ -35,7 +35,7 @@ namespace MES_CP
             toolStripGridAndSimulationStatusLabel.Text = status;
         }
 
-        private void setInitialData()
+        private void SetInitialData()
         {
             initialData = new InitialData
             {
@@ -54,7 +54,7 @@ namespace MES_CP
             };
         }
 
-        private bool isEveryInitialDataTextBoxFilled()
+        private bool IsEveryInitialDataTextBoxFilled()
         {
             foreach (Control control in initialDataGroupBox.Controls)
                 if (control.Text.Equals(""))
@@ -74,13 +74,13 @@ namespace MES_CP
             saveTextFileDialog.InitialDirectory = Application.StartupPath;
         }
 
-        private bool isPositiveNumberTyped(object sender, KeyPressEventArgs e)
+        private bool IsPositiveNumberTyped(object sender, KeyPressEventArgs e)
         {
             return (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != ',')) ||
                    (e.KeyChar == ',') && (((TextBox) sender).Text.IndexOf(',') > -1);
         }
 
-        private bool isNumberTyped(object sender, KeyPressEventArgs e)
+        private bool IsNumberTyped(object sender, KeyPressEventArgs e)
         {
             return (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != ',') &&
                     (e.KeyChar != '-')) ||
@@ -88,7 +88,7 @@ namespace MES_CP
                    (e.KeyChar == '-') && (((TextBox) sender).Text.IndexOf('-') > -1);
         }
 
-        private void loadInitialDataFileButton_Click(object sender, EventArgs e)
+        private void LoadInitialDataFileButton_Click(object sender, EventArgs e)
         {
             if (openJsonFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -110,14 +110,14 @@ namespace MES_CP
 
                 toolStripInitialDataStatusLabel.Text = "Initial data from JSON file has been loaded.";
 
-                if (isEveryInitialDataTextBoxFilled())
+                if (IsEveryInitialDataTextBoxFilled())
                     EnableSimulationAndSaveToJsonButtons();
 
                 openJsonFileDialog.FileName = "";
             }
         }
 
-        private void runSimulationButton_Click(object sender, EventArgs e)
+        private void RunSimulationButton_Click(object sender, EventArgs e)
         {
             runSimulationButton.Enabled = false;
             saveResultToTextFileButton.Enabled = false;
@@ -128,7 +128,7 @@ namespace MES_CP
             toolStripGridAndSimulationStatusLabel.Visible = true;
             toolStripProgressLabel.Visible = true;
 
-            setInitialData();
+            SetInitialData();
 
             richTextBox.Text = $">>INITAIL DATA<<\n{initialData.ToString()}\n";
 
@@ -147,7 +147,6 @@ namespace MES_CP
             this.Invoke((MethodInvoker) delegate
             {
                 toolStripGridAndSimulationStatusLabel.Text = "Simulation is running...";
-                //richTextBox.AppendText("Time[s]\tMinTemp[°C]\t\t\tMaxTemp[°C]\n");
                 saveGridDetailsToTextFileButton.Enabled = true;
                 SimulationProgressBarValue = 0;
                 richTextBox.Select();
@@ -165,15 +164,15 @@ namespace MES_CP
                 toolStripProgressBar.Visible = false;
                 toolStripProgressLabel.Visible = false;
 
-                if (isEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
+                if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
                 else DisableSimulationAndSaveToJsonButtons();
             });
         }
 
-        private void saveResultToTextFileButton_Click(object sender, EventArgs e)
+        private void SaveResultToTextFileButton_Click(object sender, EventArgs e)
         {
-            saveTextFileDialog.FileName = $"simulation-result-{DateTime.Now.ToString("yyyyMMddHHmmss")}";
-            
+            saveTextFileDialog.FileName = $"simulation-result-{DateTime.Now:yyyyMMddHHmmss}";
+
             if (saveTextFileDialog.ShowDialog() == DialogResult.OK)
             {
                 toolStripInitialDataStatusLabel.Text = "Saving simulation result to text file...";
@@ -182,9 +181,9 @@ namespace MES_CP
             }
         }
 
-        private void saveGridDetailsToTextFileButton_Click(object sender, EventArgs e)
+        private void SaveGridDetailsToTextFileButton_Click(object sender, EventArgs e)
         {
-            saveTextFileDialog.FileName = $"grid-details-{DateTime.Now.ToString("yyyyMMddHHmmss")}";
+            saveTextFileDialog.FileName = $"grid-details-{DateTime.Now:yyyyMMddHHmmss}";
 
             if (saveTextFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -194,13 +193,13 @@ namespace MES_CP
             }
         }
 
-        private void saveInitialDataToJsonFileButton_Click(object sender, EventArgs e)
+        private void SaveInitialDataToJsonFileButton_Click(object sender, EventArgs e)
         {
-            saveJsonFileDialog.FileName = $"initial-data-{DateTime.Now.ToString("yyyyMMddHHmmss")}";
+            saveJsonFileDialog.FileName = $"initial-data-{DateTime.Now:yyyyMMddHHmmss}";
 
             if (saveJsonFileDialog.ShowDialog() == DialogResult.OK)
             {
-                setInitialData();
+                SetInitialData();
                 toolStripInitialDataStatusLabel.Text = "Saving initial data to JSON file...";
                 File.WriteAllText(saveJsonFileDialog.FileName, JsonConvert.SerializeObject(initialData));
                 toolStripInitialDataStatusLabel.Text = "Initial data has been saved to JSON file.";
@@ -211,7 +210,7 @@ namespace MES_CP
         {
             saveInitialDataToJsonFileButton.Enabled = true;
 
-            if(!isSimulationRunning) runSimulationButton.Enabled = true;
+            if (!isSimulationRunning) runSimulationButton.Enabled = true;
         }
 
         private void DisableSimulationAndSaveToJsonButtons()
@@ -220,136 +219,136 @@ namespace MES_CP
             runSimulationButton.Enabled = false;
         }
 
-        private void gridLengthTextBox_Leave(object sender, EventArgs e)
+        private void GridLengthTextBox_Leave(object sender, EventArgs e)
         {
-            if (isEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
             else DisableSimulationAndSaveToJsonButtons();
         }
 
-        private void gridHeightTextBox_Leave(object sender, EventArgs e)
+        private void GridHeightTextBox_Leave(object sender, EventArgs e)
         {
-            if (isEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
             else DisableSimulationAndSaveToJsonButtons();
         }
 
-        private void nodesCountAlongTheLengthTextBox_Leave(object sender, EventArgs e)
+        private void NodesCountAlongTheLengthTextBox_Leave(object sender, EventArgs e)
         {
-            if (isEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
             else DisableSimulationAndSaveToJsonButtons();
         }
 
-        private void nodesCountAlongTheHeightTextBox_Leave(object sender, EventArgs e)
+        private void NodesCountAlongTheHeightTextBox_Leave(object sender, EventArgs e)
         {
-            if (isEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
             else DisableSimulationAndSaveToJsonButtons();
         }
 
-        private void initialTemperatureTextBox_Leave(object sender, EventArgs e)
+        private void InitialTemperatureTextBox_Leave(object sender, EventArgs e)
         {
-            if (isEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
             else DisableSimulationAndSaveToJsonButtons();
         }
 
-        private void ambientTemperatureTextBox_Leave(object sender, EventArgs e)
+        private void AmbientTemperatureTextBox_Leave(object sender, EventArgs e)
         {
-            if (isEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
             else DisableSimulationAndSaveToJsonButtons();
         }
 
-        private void simulationTimeTextBox_Leave(object sender, EventArgs e)
+        private void SimulationTimeTextBox_Leave(object sender, EventArgs e)
         {
-            if (isEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
             else DisableSimulationAndSaveToJsonButtons();
         }
 
-        private void simulationTimeStepTextBox_Leave(object sender, EventArgs e)
+        private void SimulationTimeStepTextBox_Leave(object sender, EventArgs e)
         {
-            if (isEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
             else DisableSimulationAndSaveToJsonButtons();
         }
 
-        private void alphaTextBox_Leave(object sender, EventArgs e)
+        private void AlphaTextBox_Leave(object sender, EventArgs e)
         {
-            if (isEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
             else DisableSimulationAndSaveToJsonButtons();
         }
 
-        private void specificHeatTextBox_Leave(object sender, EventArgs e)
+        private void SpecificHeatTextBox_Leave(object sender, EventArgs e)
         {
-            if (isEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
             else DisableSimulationAndSaveToJsonButtons();
         }
 
-        private void conductivityTextBox_Leave(object sender, EventArgs e)
+        private void ConductivityTextBox_Leave(object sender, EventArgs e)
         {
-            if (isEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
             else DisableSimulationAndSaveToJsonButtons();
         }
 
-        private void densityTextBox_Leave(object sender, EventArgs e)
+        private void DensityTextBox_Leave(object sender, EventArgs e)
         {
-            if (isEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
             else DisableSimulationAndSaveToJsonButtons();
         }
 
-        private void gridLengthTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        private void GridLengthTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            e.Handled = isPositiveNumberTyped(sender, e);
+            e.Handled = IsPositiveNumberTyped(sender, e);
         }
 
-        private void gridHeightTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        private void GridHeightTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            e.Handled = isPositiveNumberTyped(sender, e);
+            e.Handled = IsPositiveNumberTyped(sender, e);
         }
 
-        private void nodesCountAlongTheLengthTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        private void NodesCountAlongTheLengthTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            e.Handled = isPositiveNumberTyped(sender, e);
+            e.Handled = IsPositiveNumberTyped(sender, e);
         }
 
-        private void nodesCountAlongTheHeightTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        private void NodesCountAlongTheHeightTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            e.Handled = isPositiveNumberTyped(sender, e);
+            e.Handled = IsPositiveNumberTyped(sender, e);
         }
 
-        private void initialTemperatureTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        private void InitialTemperatureTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            e.Handled = isNumberTyped(sender, e);
+            e.Handled = IsNumberTyped(sender, e);
         }
 
-        private void ambientTemperatureTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        private void AmbientTemperatureTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            e.Handled = isNumberTyped(sender, e);
+            e.Handled = IsNumberTyped(sender, e);
         }
 
-        private void simulationTimeTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        private void SimulationTimeTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            e.Handled = isPositiveNumberTyped(sender, e);
+            e.Handled = IsPositiveNumberTyped(sender, e);
         }
 
-        private void simulationTimeStepTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        private void SimulationTimeStepTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            e.Handled = isPositiveNumberTyped(sender, e);
+            e.Handled = IsPositiveNumberTyped(sender, e);
         }
 
-        private void alphaTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        private void AlphaTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            e.Handled = isNumberTyped(sender, e);
+            e.Handled = IsNumberTyped(sender, e);
         }
 
-        private void specificHeatTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        private void SpecificHeatTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            e.Handled = isPositiveNumberTyped(sender, e);
+            e.Handled = IsPositiveNumberTyped(sender, e);
         }
 
-        private void conductivityTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        private void ConductivityTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            e.Handled = isPositiveNumberTyped(sender, e);
+            e.Handled = IsPositiveNumberTyped(sender, e);
         }
 
-        private void densityTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        private void DensityTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            e.Handled = isPositiveNumberTyped(sender, e);
+            e.Handled = IsPositiveNumberTyped(sender, e);
         }
     }
 }

@@ -1,0 +1,14 @@
+﻿{
+  "Length": 0.100,
+  "Height": 0.100,
+  "NodesCountAlongTheLength": 20,
+  "NodesCountAlongTheHeight": 20,
+  "InitialTemperature": 22,
+  "SimulationTime": 100,
+  "SimulationTimeStep": 1,
+  "AmbientTemperature": 32,
+  "Alpha": 30,
+  "SpecificHeat": 795.0,
+  "Conductivity": 167.0,
+  "Density": 2800.0
+}

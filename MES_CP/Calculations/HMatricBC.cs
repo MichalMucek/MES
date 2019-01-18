@@ -1,12 +1,9 @@
 ﻿using System;
-using System.IO;
 using MathNet.Numerics.LinearAlgebra;
-using Newtonsoft.Json.Linq;
-using org.mariuszgromada.math.mxparser;
 
 namespace MES_CP.Calculations
 {
-    internal static class HMatricBC
+    static class HMatricBC
     {
         private static readonly Vector<double>[] ksiVectors =
         {
@@ -24,7 +21,7 @@ namespace MES_CP.Calculations
             Vector<double>.Build.DenseOfArray(new double[] {1 / Math.Sqrt(3), -1 / Math.Sqrt(3)}),
         };
 
-        public static Matrix<double>[] ShapeFunctionsMatrices { get; }=
+        public static Matrix<double>[] ShapeFunctionsMatrices { get; } =
         {
             Matrix<double>.Build.Dense(2, 4),
             Matrix<double>.Build.Dense(2, 4),
@@ -54,7 +51,7 @@ namespace MES_CP.Calculations
 
             hBCMatrix = convectionCoefficient * sumOfNvecNvecTdSMatrix;
 
-            return hBCMatrix;
+            return hBCMatrix.Clone();
         }
 
         private static void CalculateShapeFunctions()

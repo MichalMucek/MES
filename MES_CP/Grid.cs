@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,10 +16,10 @@ namespace MES_CP
         private List<Element> Elements { get; } = new List<Element>();
         private int nodesCount;
         private int elementsCount;
-        private Matrix<double> H { get; set; }
-        private Matrix<double> H_BC { get; set; }
-        private Matrix<double> C { get; set; }
-        private Vector<double> P { get; set; }
+        private Matrix<double> HMatrix { get; set; }
+        private Matrix<double> H_BCMatrix { get; set; }
+        private Matrix<double> CMatrix { get; set; }
+        private Vector<double> PVector { get; set; }
 
         private List<KeyValuePair<double, Vector<double>>> TimeTemperature = new List<KeyValuePair<double, Vector<double>>>();
 
@@ -47,7 +48,7 @@ namespace MES_CP
             nodesCount = initialData.NodesCountAlongTheHeight * initialData.NodesCountAlongTheLength;
 
             AddNodes(x0, y0, dx, dy, nL, nH, t0);
-            AddElements(nH);
+            AddElements(nH, nL);
             GenerateGlobalMatricesAndVectors();
         }
 
@@ -76,7 +77,7 @@ namespace MES_CP
             }
         }
 
-        private void AddElements(int nH)
+        private void AddElements(int nH, int nL)
         {
             for (int id = 1, i = 0; id <= elementsCount; i++)
             {
@@ -89,11 +90,27 @@ namespace MES_CP
                         Nodes[i + 1]
                     };
 
-                    Element element = new Element(elementNodes, id, InitialData);
+                    InitialData myData = InitialData;
 
-                    Elements.Add(element);
+                    if (id > (nL - 2) * (nH - 1))
+                    {
+                        Console.WriteLine($"{id}: conv=7 ambient=250");
+                        myData.ConvectionCoefficient = 50;
+                        myData.AmbientTemperature = 250;
+                        Elements.Add(new Element(elementNodes, id, myData));
+                    }
+                    else Elements.Add(new Element(elementNodes, id, InitialData));
 
-                    var idLocal = id;
+                    if (id % (nH - 1) == 0 || (id - 1) % (nH - 1) == 0)
+                    {
+                        Console.WriteLine($"{id}: conv=0");
+                        myData.ConvectionCoefficient = 0;
+                        myData.AmbientTemperature = InitialData.AmbientTemperature;
+                        Elements.Add(new Element(elementNodes, id, myData));
+                    }
+                    else Elements.Add(new Element(elementNodes, id, InitialData));
+
+                    var idLocal = id; //GUI Update
                     Program.MainForm.BeginInvoke((MethodInvoker) delegate
                     {
                         Program.MainForm.SimulationProgressBarValue = (idLocal * 100) / elementsCount;
@@ -106,11 +123,10 @@ namespace MES_CP
 
         private void GenerateGlobalMatricesAndVectors()
         {
-            H = Matrix<double>.Build.Dense(nodesCount, nodesCount);
-            H_BC = Matrix<double>.Build.Dense(nodesCount, nodesCount);
-            C = Matrix<double>.Build.Dense(nodesCount, nodesCount);
-            P = Vector<double>.Build.Dense(nodesCount);
-
+            HMatrix = Matrix<double>.Build.Dense(nodesCount, nodesCount);
+            H_BCMatrix = Matrix<double>.Build.Dense(nodesCount, nodesCount);
+            CMatrix = Matrix<double>.Build.Dense(nodesCount, nodesCount);
+            PVector = Vector<double>.Build.Dense(nodesCount);
 
             foreach (var element in Elements)
             {
@@ -118,19 +134,19 @@ namespace MES_CP
                 {
                     for (int j = i; j < 4; j++)
                     {
-                        H[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] += element.H[i, j];
-                        H_BC[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] += element.H_BC[i, j];
-                        C[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] += element.C[i, j];
+                        HMatrix[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] += element.H[i, j];
+                        H_BCMatrix[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] += element.H_BC[i, j];
+                        CMatrix[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] += element.C[i, j];
                         
                         if (i != j)
                         {
-                            H[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] += element.H[j, i];
-                            H_BC[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] += element.H_BC[j, i];
-                            C[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] += element.C[j, i];
+                            HMatrix[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] += element.H[j, i];
+                            H_BCMatrix[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] += element.H_BC[j, i];
+                            CMatrix[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] += element.C[j, i];
                         }
                     }
 
-                    P[element.Nodes[i].Id - 1] += element.P[i];
+                    PVector[element.Nodes[i].Id - 1] += element.P[i];
                 }
             }
         }
@@ -143,7 +159,7 @@ namespace MES_CP
             var tVector = Vector<double>.Build.Dense(nodesCount);
             var timeStep = InitialData.SimulationTimeStep;
 
-            hHatMatrix = (H + H_BC) + (C / timeStep);
+            hHatMatrix = (HMatrix + H_BCMatrix) + (CMatrix / timeStep);
 
             //GUI update
             Program.MainForm.BeginInvoke((MethodInvoker) delegate
@@ -155,7 +171,7 @@ namespace MES_CP
 
             for (double passedTime = timeStep; passedTime <= InitialData.SimulationTime; passedTime += timeStep)
             {
-                pHatVector = (C / timeStep) * t0Vector + P;
+                pHatVector = (CMatrix / timeStep) * t0Vector + PVector;
                 tVector = hHatMatrixInverse * pHatVector;
 
                 var time = passedTime;
@@ -198,10 +214,10 @@ namespace MES_CP
             foreach (var element in Elements)
                 stringBuilder.Append($"{element}\n");
 
-            stringBuilder.Append($">>GLOBAL MATRIX [H]<<\n{H.ToMatrixString(nodesCount, nodesCount)}\n");
-            stringBuilder.Append($">>GLOBAL MATRIX [H_BC]<<\n{H_BC.ToMatrixString(nodesCount, nodesCount)}\n");
-            stringBuilder.Append($">>GLOBAL MATRIX [C]<<\n{C.ToMatrixString(nodesCount, nodesCount)}\n");
-            stringBuilder.Append(">>GLOBAL VECTOR {P}<<\n" + P.ToRowMatrix().ToMatrixString(1, nodesCount));
+            stringBuilder.Append($">>GLOBAL MATRIX [H]<<\n{HMatrix.ToMatrixString(nodesCount, nodesCount)}\n");
+            stringBuilder.Append($">>GLOBAL MATRIX [H_BC]<<\n{H_BCMatrix.ToMatrixString(nodesCount, nodesCount)}\n");
+            stringBuilder.Append($">>GLOBAL MATRIX [C]<<\n{CMatrix.ToMatrixString(nodesCount, nodesCount)}\n");
+            stringBuilder.Append(">>GLOBAL VECTOR {P}<<\n" + PVector.ToRowMatrix().ToMatrixString(1, nodesCount));
 
             return stringBuilder.ToString();
         }

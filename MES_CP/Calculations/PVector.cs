@@ -9,14 +9,14 @@ namespace MES_CP.Calculations
         public static Vector<double> Calculate(Element element)
         {
             var pVector = Vector<double>.Build.Dense(4);
-            var alpha = element.InitialData.ConvectionCoefficient;
+            var convectionCoefficient = element.InitialData.ConvectionCoefficient;
             var ambientTemperature = element.InitialData.AmbientTemperature;
 
             CalculateSumOfNvecdS(element.SidesLengths, element.BoundarySides);
 
-            pVector = alpha * sumOfNvecdSVector * ambientTemperature;
+            pVector = convectionCoefficient * sumOfNvecdSVector * ambientTemperature;
 
-            return pVector;
+            return pVector.Clone();
         }
 
         private static void CalculateSumOfNvecdS(double[] sideLengths, bool[] boundarySides)

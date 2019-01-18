@@ -94,7 +94,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="data\initialData.json" />
+    <None Include="initialData\BOROFLOAT Glass.json" />
+    <None Include="initialData\initialData ALU.json" />
+    <None Include="initialData\initialData.json" />
+    <None Include="initialData\initialData2.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -114,6 +117,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions />
 </Project>
