@@ -1,8 +1,5 @@
 ﻿using System;
-using System.IO;
 using MathNet.Numerics.LinearAlgebra;
-using Newtonsoft.Json.Linq;
-using org.mariuszgromada.math.mxparser;
 
 namespace MES_CP.Calculations
 {
@@ -11,7 +8,7 @@ namespace MES_CP.Calculations
         private static readonly Vector<double>[] ksiVectors =
         {
             Vector<double>.Build.DenseOfArray(new double[] {-1 / Math.Sqrt(3), 1 / Math.Sqrt(3)}),
-            Vector<double>.Build.DenseOfArray(new double[] {1.0, 1 / 1.0}),
+            Vector<double>.Build.DenseOfArray(new double[] {1.0, 1.0}),
             Vector<double>.Build.DenseOfArray(new double[] {1 / Math.Sqrt(3), -1 / Math.Sqrt(3)}),
             Vector<double>.Build.DenseOfArray(new double[] {-1.0, -1.0}),
         };
@@ -24,7 +21,7 @@ namespace MES_CP.Calculations
             Vector<double>.Build.DenseOfArray(new double[] {1 / Math.Sqrt(3), -1 / Math.Sqrt(3)}),
         };
 
-        public static Matrix<double>[] ShapeFunctionsMatrices { get; }=
+        public static Matrix<double>[] ShapeFunctionsMatrices { get; } =
         {
             Matrix<double>.Build.Dense(2, 4),
             Matrix<double>.Build.Dense(2, 4),
