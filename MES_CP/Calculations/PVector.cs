@@ -8,23 +8,23 @@ namespace MES_CP.Calculations
 
         public static Vector<double> Calculate(Element element)
         {
-            var pVector = Vector<double>.Build.Dense(4);
-            var alpha = element.InitialData.ConvectionCoefficient;
+            var pVector = Vector<double>.Build.Dense(Element.SidesCount);
+            var convectionCoefficient = element.InitialData.ConvectionCoefficient;
             var ambientTemperature = element.InitialData.AmbientTemperature;
 
             CalculateSumOfNvecdS(element.SidesLengths, element.BoundarySides);
 
-            pVector = alpha * sumOfNvecdSVector * ambientTemperature;
+            pVector = convectionCoefficient * sumOfNvecdSVector * ambientTemperature;
 
             return pVector;
         }
 
         private static void CalculateSumOfNvecdS(double[] sideLengths, bool[] boundarySides)
         {
-            var shapeFunctionsMatrices = HMatricBC.ShapeFunctionsMatrices;
-            sumOfNvecdSVector = Vector<double>.Build.Dense(4);
+            var shapeFunctionsMatrices = HMatrixBC2D.ShapeFunctionsMatrices;
+            sumOfNvecdSVector = Vector<double>.Build.Dense(Element.SidesCount);
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < Element.SidesCount; i++)
             {
                 if (boundarySides[i])
                 {

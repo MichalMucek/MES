@@ -56,7 +56,7 @@
             this.initialTemperatureTextBox = new System.Windows.Forms.TextBox();
             this.initialTemperatureLabel = new System.Windows.Forms.Label();
             this.richTextBox = new System.Windows.Forms.RichTextBox();
-            this.runSimulationButton = new System.Windows.Forms.Button();
+            this.startSimulationButton = new System.Windows.Forms.Button();
             this.saveResultToTextFileButton = new System.Windows.Forms.Button();
             this.openJsonFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveTextFileDialog = new System.Windows.Forms.SaveFileDialog();
@@ -67,6 +67,7 @@
             this.toolStripProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripProgressLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.saveJsonFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.stopSimulationButton = new System.Windows.Forms.Button();
             this.initialDataGroupBox.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -120,7 +121,7 @@
             this.saveInitialDataToJsonFileButton.TabIndex = 13;
             this.saveInitialDataToJsonFileButton.Text = "Save initial data to JSON file";
             this.saveInitialDataToJsonFileButton.UseVisualStyleBackColor = true;
-            this.saveInitialDataToJsonFileButton.Click += new System.EventHandler(this.saveInitialDataToJsonFileButton_Click);
+            this.saveInitialDataToJsonFileButton.Click += new System.EventHandler(this.SaveInitialDataToJsonFileButton_Click);
             // 
             // loadInitialDataJsonFileButton
             // 
@@ -131,7 +132,7 @@
             this.loadInitialDataJsonFileButton.TabIndex = 0;
             this.loadInitialDataJsonFileButton.Text = "Load JSON file with initial data";
             this.loadInitialDataJsonFileButton.UseVisualStyleBackColor = true;
-            this.loadInitialDataJsonFileButton.Click += new System.EventHandler(this.loadInitialDataFileButton_Click);
+            this.loadInitialDataJsonFileButton.Click += new System.EventHandler(this.LoadInitialDataFileButton_Click);
             // 
             // densityTextBox
             // 
@@ -140,8 +141,8 @@
             this.densityTextBox.Name = "densityTextBox";
             this.densityTextBox.Size = new System.Drawing.Size(99, 20);
             this.densityTextBox.TabIndex = 12;
-            this.densityTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.densityTextBox_KeyPress);
-            this.densityTextBox.Leave += new System.EventHandler(this.densityTextBox_Leave);
+            this.densityTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.DensityTextBox_KeyPress);
+            this.densityTextBox.Leave += new System.EventHandler(this.DensityTextBox_Leave);
             // 
             // densityLabel
             // 
@@ -159,8 +160,8 @@
             this.conductivityTextBox.Name = "conductivityTextBox";
             this.conductivityTextBox.Size = new System.Drawing.Size(99, 20);
             this.conductivityTextBox.TabIndex = 11;
-            this.conductivityTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.conductivityTextBox_KeyPress);
-            this.conductivityTextBox.Leave += new System.EventHandler(this.conductivityTextBox_Leave);
+            this.conductivityTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ConductivityTextBox_KeyPress);
+            this.conductivityTextBox.Leave += new System.EventHandler(this.ConductivityTextBox_Leave);
             // 
             // conductivityLabel
             // 
@@ -178,8 +179,8 @@
             this.specificHeatTextBox.Name = "specificHeatTextBox";
             this.specificHeatTextBox.Size = new System.Drawing.Size(99, 20);
             this.specificHeatTextBox.TabIndex = 10;
-            this.specificHeatTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.specificHeatTextBox_KeyPress);
-            this.specificHeatTextBox.Leave += new System.EventHandler(this.specificHeatTextBox_Leave);
+            this.specificHeatTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SpecificHeatTextBox_KeyPress);
+            this.specificHeatTextBox.Leave += new System.EventHandler(this.SpecificHeatTextBox_Leave);
             // 
             // specificHeatLabel
             // 
@@ -197,8 +198,8 @@
             this.nodesCountAlongTheHeightTextBox.Name = "nodesCountAlongTheHeightTextBox";
             this.nodesCountAlongTheHeightTextBox.Size = new System.Drawing.Size(99, 20);
             this.nodesCountAlongTheHeightTextBox.TabIndex = 4;
-            this.nodesCountAlongTheHeightTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.nodesCountAlongTheHeightTextBox_KeyPress);
-            this.nodesCountAlongTheHeightTextBox.Leave += new System.EventHandler(this.nodesCountAlongTheHeightTextBox_Leave);
+            this.nodesCountAlongTheHeightTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NodesCountAlongTheHeightTextBox_KeyPress);
+            this.nodesCountAlongTheHeightTextBox.Leave += new System.EventHandler(this.NodesCountAlongTheHeightTextBox_Leave);
             // 
             // nodesCountAlongTheHeightLabel
             // 
@@ -216,8 +217,8 @@
             this.nodesCountAlongTheLengthTextBox.Name = "nodesCountAlongTheLengthTextBox";
             this.nodesCountAlongTheLengthTextBox.Size = new System.Drawing.Size(99, 20);
             this.nodesCountAlongTheLengthTextBox.TabIndex = 3;
-            this.nodesCountAlongTheLengthTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.nodesCountAlongTheLengthTextBox_KeyPress);
-            this.nodesCountAlongTheLengthTextBox.Leave += new System.EventHandler(this.nodesCountAlongTheLengthTextBox_Leave);
+            this.nodesCountAlongTheLengthTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NodesCountAlongTheLengthTextBox_KeyPress);
+            this.nodesCountAlongTheLengthTextBox.Leave += new System.EventHandler(this.NodesCountAlongTheLengthTextBox_Leave);
             // 
             // nodesCountAlongTheLengthLabel
             // 
@@ -235,8 +236,8 @@
             this.gridHeightTextBox.Name = "gridHeightTextBox";
             this.gridHeightTextBox.Size = new System.Drawing.Size(99, 20);
             this.gridHeightTextBox.TabIndex = 2;
-            this.gridHeightTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.gridHeightTextBox_KeyPress);
-            this.gridHeightTextBox.Leave += new System.EventHandler(this.gridHeightTextBox_Leave);
+            this.gridHeightTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.GridHeightTextBox_KeyPress);
+            this.gridHeightTextBox.Leave += new System.EventHandler(this.GridHeightTextBox_Leave);
             // 
             // gridHeightLabel
             // 
@@ -254,8 +255,8 @@
             this.gridLengthTextBox.Name = "gridLengthTextBox";
             this.gridLengthTextBox.Size = new System.Drawing.Size(99, 20);
             this.gridLengthTextBox.TabIndex = 1;
-            this.gridLengthTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.gridLengthTextBox_KeyPress);
-            this.gridLengthTextBox.Leave += new System.EventHandler(this.gridLengthTextBox_Leave);
+            this.gridLengthTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.GridLengthTextBox_KeyPress);
+            this.gridLengthTextBox.Leave += new System.EventHandler(this.GridLengthTextBox_Leave);
             // 
             // gridLengthLabel
             // 
@@ -273,8 +274,8 @@
             this.alphaTextBox.Name = "alphaTextBox";
             this.alphaTextBox.Size = new System.Drawing.Size(99, 20);
             this.alphaTextBox.TabIndex = 9;
-            this.alphaTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.alphaTextBox_KeyPress);
-            this.alphaTextBox.Leave += new System.EventHandler(this.alphaTextBox_Leave);
+            this.alphaTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AlphaTextBox_KeyPress);
+            this.alphaTextBox.Leave += new System.EventHandler(this.AlphaTextBox_Leave);
             // 
             // alphaLabel
             // 
@@ -292,8 +293,8 @@
             this.ambientTemperatureTextBox.Name = "ambientTemperatureTextBox";
             this.ambientTemperatureTextBox.Size = new System.Drawing.Size(99, 20);
             this.ambientTemperatureTextBox.TabIndex = 6;
-            this.ambientTemperatureTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ambientTemperatureTextBox_KeyPress);
-            this.ambientTemperatureTextBox.Leave += new System.EventHandler(this.ambientTemperatureTextBox_Leave);
+            this.ambientTemperatureTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AmbientTemperatureTextBox_KeyPress);
+            this.ambientTemperatureTextBox.Leave += new System.EventHandler(this.AmbientTemperatureTextBox_Leave);
             // 
             // ambientTemperatureLabel
             // 
@@ -311,8 +312,8 @@
             this.simulationTimeStepTextBox.Name = "simulationTimeStepTextBox";
             this.simulationTimeStepTextBox.Size = new System.Drawing.Size(99, 20);
             this.simulationTimeStepTextBox.TabIndex = 8;
-            this.simulationTimeStepTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.simulationTimeStepTextBox_KeyPress);
-            this.simulationTimeStepTextBox.Leave += new System.EventHandler(this.simulationTimeStepTextBox_Leave);
+            this.simulationTimeStepTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SimulationTimeStepTextBox_KeyPress);
+            this.simulationTimeStepTextBox.Leave += new System.EventHandler(this.SimulationTimeStepTextBox_Leave);
             // 
             // simulationTimeStepLabel
             // 
@@ -330,8 +331,8 @@
             this.simulationTimeTextBox.Name = "simulationTimeTextBox";
             this.simulationTimeTextBox.Size = new System.Drawing.Size(99, 20);
             this.simulationTimeTextBox.TabIndex = 7;
-            this.simulationTimeTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.simulationTimeTextBox_KeyPress);
-            this.simulationTimeTextBox.Leave += new System.EventHandler(this.simulationTimeTextBox_Leave);
+            this.simulationTimeTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SimulationTimeTextBox_KeyPress);
+            this.simulationTimeTextBox.Leave += new System.EventHandler(this.SimulationTimeTextBox_Leave);
             // 
             // simulationTimeLabel
             // 
@@ -349,8 +350,8 @@
             this.initialTemperatureTextBox.Name = "initialTemperatureTextBox";
             this.initialTemperatureTextBox.Size = new System.Drawing.Size(99, 20);
             this.initialTemperatureTextBox.TabIndex = 5;
-            this.initialTemperatureTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.initialTemperatureTextBox_KeyPress);
-            this.initialTemperatureTextBox.Leave += new System.EventHandler(this.initialTemperatureTextBox_Leave);
+            this.initialTemperatureTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.InitialTemperatureTextBox_KeyPress);
+            this.initialTemperatureTextBox.Leave += new System.EventHandler(this.InitialTemperatureTextBox_Leave);
             // 
             // initialTemperatureLabel
             // 
@@ -377,17 +378,17 @@
             this.richTextBox.Text = "";
             this.richTextBox.WordWrap = false;
             // 
-            // runSimulationButton
+            // startSimulationButton
             // 
-            this.runSimulationButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.runSimulationButton.Enabled = false;
-            this.runSimulationButton.Location = new System.Drawing.Point(12, 401);
-            this.runSimulationButton.Name = "runSimulationButton";
-            this.runSimulationButton.Size = new System.Drawing.Size(279, 23);
-            this.runSimulationButton.TabIndex = 0;
-            this.runSimulationButton.Text = "Run simulation";
-            this.runSimulationButton.UseVisualStyleBackColor = true;
-            this.runSimulationButton.Click += new System.EventHandler(this.runSimulationButton_Click);
+            this.startSimulationButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.startSimulationButton.Enabled = false;
+            this.startSimulationButton.Location = new System.Drawing.Point(12, 401);
+            this.startSimulationButton.Name = "startSimulationButton";
+            this.startSimulationButton.Size = new System.Drawing.Size(153, 23);
+            this.startSimulationButton.TabIndex = 0;
+            this.startSimulationButton.Text = "Start simulation";
+            this.startSimulationButton.UseVisualStyleBackColor = true;
+            this.startSimulationButton.Click += new System.EventHandler(this.StartSimulationButton_Click);
             // 
             // saveResultToTextFileButton
             // 
@@ -399,7 +400,7 @@
             this.saveResultToTextFileButton.TabIndex = 2;
             this.saveResultToTextFileButton.Text = "Save result to text file";
             this.saveResultToTextFileButton.UseVisualStyleBackColor = true;
-            this.saveResultToTextFileButton.Click += new System.EventHandler(this.saveResultToTextFileButton_Click);
+            this.saveResultToTextFileButton.Click += new System.EventHandler(this.SaveResultToTextFileButton_Click);
             // 
             // openJsonFileDialog
             // 
@@ -422,7 +423,7 @@
             this.saveGridDetailsToTextFileButton.TabIndex = 1;
             this.saveGridDetailsToTextFileButton.Text = "Save grid details to text file";
             this.saveGridDetailsToTextFileButton.UseVisualStyleBackColor = true;
-            this.saveGridDetailsToTextFileButton.Click += new System.EventHandler(this.saveGridDetailsToTextFileButton_Click);
+            this.saveGridDetailsToTextFileButton.Click += new System.EventHandler(this.SaveGridDetailsToTextFileButton_Click);
             // 
             // statusStrip
             // 
@@ -468,15 +469,28 @@
             this.saveJsonFileDialog.DefaultExt = "json";
             this.saveJsonFileDialog.Filter = "JSON file|*.json|Text file|*.txt";
             // 
+            // stopSimulationButton
+            // 
+            this.stopSimulationButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.stopSimulationButton.Enabled = false;
+            this.stopSimulationButton.Location = new System.Drawing.Point(171, 401);
+            this.stopSimulationButton.Name = "stopSimulationButton";
+            this.stopSimulationButton.Size = new System.Drawing.Size(120, 23);
+            this.stopSimulationButton.TabIndex = 7;
+            this.stopSimulationButton.Text = "Stop simulation";
+            this.stopSimulationButton.UseVisualStyleBackColor = true;
+            this.stopSimulationButton.Click += new System.EventHandler(this.StopSimulationButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(884, 478);
+            this.Controls.Add(this.stopSimulationButton);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.saveGridDetailsToTextFileButton);
             this.Controls.Add(this.saveResultToTextFileButton);
-            this.Controls.Add(this.runSimulationButton);
+            this.Controls.Add(this.startSimulationButton);
             this.Controls.Add(this.richTextBox);
             this.Controls.Add(this.initialDataGroupBox);
             this.MinimumSize = new System.Drawing.Size(900, 517);
@@ -520,7 +534,7 @@
         private System.Windows.Forms.Label specificHeatLabel;
         private System.Windows.Forms.Button loadInitialDataJsonFileButton;
         private System.Windows.Forms.RichTextBox richTextBox;
-        private System.Windows.Forms.Button runSimulationButton;
+        private System.Windows.Forms.Button startSimulationButton;
         private System.Windows.Forms.Button saveResultToTextFileButton;
         private System.Windows.Forms.OpenFileDialog openJsonFileDialog;
         private System.Windows.Forms.SaveFileDialog saveTextFileDialog;
@@ -532,5 +546,6 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripProgressLabel;
         private System.Windows.Forms.ToolStripStatusLabel toolStripGridAndSimulationStatusLabel;
         private System.Windows.Forms.SaveFileDialog saveJsonFileDialog;
+        private System.Windows.Forms.Button stopSimulationButton;
     }
 }

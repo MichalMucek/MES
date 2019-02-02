@@ -4,14 +4,16 @@ namespace MES_CP.Calculations
 {
     static class CMatrix
     {
-        public static Matrix<double> Calculate(double c, double ro)
-        {
-            Matrix<double> cMatrix = Matrix<double>.Build.Dense(4, 4);
+        private const int FiniteElementPointsCount = 4;
 
-            for (int i = 0; i < 4; i++)
+        public static Matrix<double> Calculate(double specificHeat, double density)
+        {
+            Matrix<double> cMatrix = Matrix<double>.Build.Dense(FiniteElementPointsCount, FiniteElementPointsCount);
+
+            for (int i = 0; i < FiniteElementPointsCount; i++)
             {
-                cMatrix += c * ro * HMatrix.ShapeFunctionsNMatrix.Row(i).ToColumnMatrix() *
-                           HMatrix.ShapeFunctionsNMatrix.Row(i).ToRowMatrix() * HMatrix.jacobianDeterminantVector[i];
+                cMatrix += specificHeat * density * HMatrix.ShapeFunctionsNMatrix.Row(i).ToColumnMatrix() *
+                           HMatrix.ShapeFunctionsNMatrix.Row(i).ToRowMatrix() * HMatrix.JacobianDeterminantVector[i];
             }
 
             return cMatrix;

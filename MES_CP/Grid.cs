@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using MathNet.Numerics.LinearAlgebra;
 using Newtonsoft.Json.Linq;
@@ -16,7 +18,7 @@ namespace MES_CP
         private int nodesCount;
         private int elementsCount;
         private Matrix<double> H { get; set; }
-        private Matrix<double> H_BC { get; set; }
+        private Matrix<double> HBoundaryConditions { get; set; }
         private Matrix<double> C { get; set; }
         private Vector<double> P { get; set; }
 
@@ -78,7 +80,7 @@ namespace MES_CP
 
         private void AddElements(int nH)
         {
-            for (int id = 1, i = 0; id <= elementsCount; i++)
+            for (int nodeId = 1, i = 0; nodeId <= elementsCount; i++)
             {
                 if (Nodes[i].Id % nH != 0)
                 {
@@ -89,17 +91,15 @@ namespace MES_CP
                         Nodes[i + 1]
                     };
 
-                    Element element = new Element(elementNodes, id, InitialData);
+                    Elements.Add(new Element(elementNodes, nodeId, InitialData));
 
-                    Elements.Add(element);
-
-                    var idLocal = id;
-                    Program.MainForm.BeginInvoke((MethodInvoker) delegate
+                    // GUI update
+                    Program.MainForm.Invoke((MethodInvoker) delegate
                     {
-                        Program.MainForm.SimulationProgressBarValue = (idLocal * 100) / elementsCount;
+                        Program.MainForm.SimulationProgressBarValue = (nodeId * 100) / elementsCount;
                     });
 
-                    id++;
+                    nodeId++;
                 }
             }
         }
@@ -107,25 +107,25 @@ namespace MES_CP
         private void GenerateGlobalMatricesAndVectors()
         {
             H = Matrix<double>.Build.Dense(nodesCount, nodesCount);
-            H_BC = Matrix<double>.Build.Dense(nodesCount, nodesCount);
+            HBoundaryConditions = Matrix<double>.Build.Dense(nodesCount, nodesCount);
             C = Matrix<double>.Build.Dense(nodesCount, nodesCount);
             P = Vector<double>.Build.Dense(nodesCount);
 
 
             foreach (var element in Elements)
             {
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < Element.NodesCount; i++)
                 {
-                    for (int j = i; j < 4; j++)
+                    for (int j = i; j < Element.NodesCount; j++)
                     {
                         H[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] += element.H[i, j];
-                        H_BC[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] += element.H_BC[i, j];
+                        HBoundaryConditions[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] += element.HBoundaryConditions[i, j];
                         C[element.Nodes[i].Id - 1, element.Nodes[j].Id - 1] += element.C[i, j];
                         
                         if (i != j)
                         {
                             H[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] += element.H[j, i];
-                            H_BC[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] += element.H_BC[j, i];
+                            HBoundaryConditions[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] += element.HBoundaryConditions[j, i];
                             C[element.Nodes[j].Id - 1, element.Nodes[i].Id - 1] += element.C[j, i];
                         }
                     }
@@ -143,15 +143,21 @@ namespace MES_CP
             var tVector = Vector<double>.Build.Dense(nodesCount);
             var timeStep = InitialData.SimulationTimeStep;
 
-            hHatMatrix = (H + H_BC) + (C / timeStep);
+            hHatMatrix = (H + HBoundaryConditions) + (C / timeStep);
 
-            //GUI update
+            // GUI update
             Program.MainForm.BeginInvoke((MethodInvoker) delegate
             {
                 Program.MainForm.UpdateGridAndSimulationStatusLabel("Simulation is about to start...");
             });
 
-            var hHatMatrixInverse = hHatMatrix.Inverse(); //time consuming
+            var hHatMatrixInverse = hHatMatrix.Inverse(); // Time consuming
+
+            // GUI update
+            Program.MainForm.BeginInvoke((MethodInvoker)delegate
+            {
+                Program.MainForm.UpdateGridAndSimulationStatusLabel("Simulation is running...");
+            });
 
             for (double passedTime = timeStep; passedTime <= InitialData.SimulationTime; passedTime += timeStep)
             {
@@ -162,8 +168,8 @@ namespace MES_CP
                 var minTemp = tVector.Min();
                 var maxTemp = tVector.Max();
 
-                //GUI update
-                Program.MainForm.BeginInvoke((MethodInvoker) delegate
+                // GUI update
+                Program.MainForm.Invoke((MethodInvoker) delegate
                 {
                     Program.MainForm.SimulationProgressBarValue = (int)((time / InitialData.SimulationTime) * 100);
                     Program.MainForm.UpdateTimeTemperatureOnRichTextBox(time, minTemp, maxTemp);
@@ -175,9 +181,76 @@ namespace MES_CP
             }
         }
 
+        public bool RunSimulationWithCancellationToken(CancellationToken token)
+        {
+            if (!token.IsCancellationRequested)
+            {
+                var hHatMatrix = Matrix<double>.Build.Dense(nodesCount, nodesCount);
+                var pHatVector = Vector<double>.Build.Dense(elementsCount);
+                var t0Vector = Vector<double>.Build.Dense(nodesCount, InitialData.InitialTemperature);
+                var tVector = Vector<double>.Build.Dense(nodesCount);
+                var timeStep = InitialData.SimulationTimeStep;
+
+                if (!token.IsCancellationRequested)
+                {
+                    hHatMatrix = (H + HBoundaryConditions) + (C / timeStep);
+
+                    // GUI update
+                    Program.MainForm.BeginInvoke((MethodInvoker) delegate
+                    {
+                        Program.MainForm.UpdateGridAndSimulationStatusLabel("Simulation is about to start...");
+                    });
+                }
+                else return false;
+
+                var hHatMatrixInverse = hHatMatrix.Inverse(); // Time consuming
+
+                if (!token.IsCancellationRequested)
+                {
+                    // GUI update
+                    Program.MainForm.BeginInvoke((MethodInvoker) delegate
+                    {
+                        Program.MainForm.UpdateGridAndSimulationStatusLabel("Simulation is running...");
+                    });
+
+                    double passedTime;
+
+                    for (passedTime = timeStep;
+                        passedTime <= InitialData.SimulationTime && !token.IsCancellationRequested;
+                        passedTime += timeStep)
+                    {
+                        pHatVector = (C / timeStep) * t0Vector + P;
+                        tVector = hHatMatrixInverse * pHatVector;
+
+                        var time = passedTime;
+                        var minTemp = tVector.Min();
+                        var maxTemp = tVector.Max();
+
+                        // GUI update
+                        Program.MainForm.Invoke((MethodInvoker) delegate
+                        {
+                            Program.MainForm.SimulationProgressBarValue =
+                                (int) ((time / InitialData.SimulationTime) * 100);
+                            Program.MainForm.UpdateTimeTemperatureOnRichTextBox(time, minTemp, maxTemp);
+                        });
+
+                        TimeTemperature.Add(new KeyValuePair<double, Vector<double>>(passedTime, tVector));
+
+                        t0Vector = tVector;
+                    }
+
+                    if (Math.Abs(passedTime - InitialData.SimulationTime) > InitialData.SimulationTimeStep) return false;
+                }
+                else return false;
+            }
+            else return false;
+
+            return true;
+        }
+
         public string TimeTemperatureToString()
         {
-            StringBuilder stringBuilder = new StringBuilder($">>INITAIL DATA<<\n{InitialData.ToString()}\n");
+            StringBuilder stringBuilder = new StringBuilder($">>INITIAL DATA<<\n{InitialData.ToString()}\n");
 
             stringBuilder.Append("Time[s]\tMinTemp[°C]\t\t\tMaxTemp[°C]\n");
 
@@ -193,13 +266,13 @@ namespace MES_CP
 
         public override string ToString()
         {
-            StringBuilder stringBuilder = new StringBuilder($">>INITAIL DATA<<\n{InitialData.ToString()}\n");
+            StringBuilder stringBuilder = new StringBuilder($">>INITIAL DATA<<\n{InitialData.ToString()}\n");
 
             foreach (var element in Elements)
                 stringBuilder.Append($"{element}\n");
 
             stringBuilder.Append($">>GLOBAL MATRIX [H]<<\n{H.ToMatrixString(nodesCount, nodesCount)}\n");
-            stringBuilder.Append($">>GLOBAL MATRIX [H_BC]<<\n{H_BC.ToMatrixString(nodesCount, nodesCount)}\n");
+            stringBuilder.Append($">>GLOBAL MATRIX [H_BC]<<\n{HBoundaryConditions.ToMatrixString(nodesCount, nodesCount)}\n");
             stringBuilder.Append($">>GLOBAL MATRIX [C]<<\n{C.ToMatrixString(nodesCount, nodesCount)}\n");
             stringBuilder.Append(">>GLOBAL VECTOR {P}<<\n" + P.ToRowMatrix().ToMatrixString(1, nodesCount));
 
