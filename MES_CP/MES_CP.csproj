@@ -76,7 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Calculations\CMatrix.cs" />
-    <Compile Include="Calculations\HMatricBC2D.cs" />
+    <Compile Include="Calculations\HMatrixBC2D.cs" />
     <Compile Include="Calculations\HMatrix.cs" />
     <Compile Include="Calculations\PVector.cs" />
     <Compile Include="InitialData.cs" />

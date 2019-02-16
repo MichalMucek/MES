@@ -13,14 +13,14 @@ namespace MES_CP
     class Grid
     {
         public InitialData InitialData { get; private set; }
-        private List<Node> Nodes { get; } = new List<Node>();
-        private List<Element> Elements { get; } = new List<Element>();
-        private int nodesCount;
-        private int elementsCount;
-        private Matrix<double> H { get; set; }
-        private Matrix<double> HBoundaryConditions { get; set; }
-        private Matrix<double> C { get; set; }
-        private Vector<double> P { get; set; }
+        public List<Node> Nodes { get; } = new List<Node>();
+        public List<Element> Elements { get; } = new List<Element>();
+        public int NodesCount { get; private set; }
+        public int ElementsCount { get; private set; }
+        public Matrix<double> H { get; private set; }
+        public Matrix<double> HBoundaryConditions { get; private set; }
+        public Matrix<double> C { get; private set; }
+        public Vector<double> P { get; private set; }
 
         private List<KeyValuePair<double, Vector<double>>> TimeTemperature = new List<KeyValuePair<double, Vector<double>>>();
 
@@ -45,8 +45,8 @@ namespace MES_CP
             int nL = initialData.NodesCountAlongTheLength;
             int nH = initialData.NodesCountAlongTheHeight;
             double t0 = initialData.InitialTemperature;
-            elementsCount = (initialData.NodesCountAlongTheHeight - 1) * (initialData.NodesCountAlongTheLength - 1);
-            nodesCount = initialData.NodesCountAlongTheHeight * initialData.NodesCountAlongTheLength;
+            ElementsCount = (initialData.NodesCountAlongTheHeight - 1) * (initialData.NodesCountAlongTheLength - 1);
+            NodesCount = initialData.NodesCountAlongTheHeight * initialData.NodesCountAlongTheLength;
 
             AddNodes(x0, y0, dx, dy, nL, nH, t0);
             AddElements(nH);
@@ -80,7 +80,7 @@ namespace MES_CP
 
         private void AddElements(int nH)
         {
-            for (int nodeId = 1, i = 0; nodeId <= elementsCount; i++)
+            for (int nodeId = 1, i = 0; nodeId <= ElementsCount; i++)
             {
                 if (Nodes[i].Id % nH != 0)
                 {
@@ -96,7 +96,7 @@ namespace MES_CP
                     // GUI update
                     Program.MainForm.Invoke((MethodInvoker) delegate
                     {
-                        Program.MainForm.SimulationProgressBarValue = (nodeId * 100) / elementsCount;
+                        Program.MainForm.SimulationProgressBarValue = (nodeId * 100) / ElementsCount;
                     });
 
                     nodeId++;
@@ -106,10 +106,10 @@ namespace MES_CP
 
         private void GenerateGlobalMatricesAndVectors()
         {
-            H = Matrix<double>.Build.Dense(nodesCount, nodesCount);
-            HBoundaryConditions = Matrix<double>.Build.Dense(nodesCount, nodesCount);
-            C = Matrix<double>.Build.Dense(nodesCount, nodesCount);
-            P = Vector<double>.Build.Dense(nodesCount);
+            H = Matrix<double>.Build.Dense(NodesCount, NodesCount);
+            HBoundaryConditions = Matrix<double>.Build.Dense(NodesCount, NodesCount);
+            C = Matrix<double>.Build.Dense(NodesCount, NodesCount);
+            P = Vector<double>.Build.Dense(NodesCount);
 
 
             foreach (var element in Elements)
@@ -137,10 +137,10 @@ namespace MES_CP
 
         public void RunSimulation()
         {
-            var hHatMatrix = Matrix<double>.Build.Dense(nodesCount, nodesCount);
-            var pHatVector = Vector<double>.Build.Dense(elementsCount);
-            var t0Vector = Vector<double>.Build.Dense(nodesCount, InitialData.InitialTemperature);
-            var tVector = Vector<double>.Build.Dense(nodesCount);
+            var hHatMatrix = Matrix<double>.Build.Dense(NodesCount, NodesCount);
+            var pHatVector = Vector<double>.Build.Dense(ElementsCount);
+            var t0Vector = Vector<double>.Build.Dense(NodesCount, InitialData.InitialTemperature);
+            var tVector = Vector<double>.Build.Dense(NodesCount);
             var timeStep = InitialData.SimulationTimeStep;
 
             hHatMatrix = (H + HBoundaryConditions) + (C / timeStep);
@@ -185,10 +185,10 @@ namespace MES_CP
         {
             if (!token.IsCancellationRequested)
             {
-                var hHatMatrix = Matrix<double>.Build.Dense(nodesCount, nodesCount);
-                var pHatVector = Vector<double>.Build.Dense(elementsCount);
-                var t0Vector = Vector<double>.Build.Dense(nodesCount, InitialData.InitialTemperature);
-                var tVector = Vector<double>.Build.Dense(nodesCount);
+                var hHatMatrix = Matrix<double>.Build.Dense(NodesCount, NodesCount);
+                var pHatVector = Vector<double>.Build.Dense(ElementsCount);
+                var t0Vector = Vector<double>.Build.Dense(NodesCount, InitialData.InitialTemperature);
+                var tVector = Vector<double>.Build.Dense(NodesCount);
                 var timeStep = InitialData.SimulationTimeStep;
 
                 if (!token.IsCancellationRequested)
@@ -271,10 +271,10 @@ namespace MES_CP
             foreach (var element in Elements)
                 stringBuilder.Append($"{element}\n");
 
-            stringBuilder.Append($">>GLOBAL MATRIX [H]<<\n{H.ToMatrixString(nodesCount, nodesCount)}\n");
-            stringBuilder.Append($">>GLOBAL MATRIX [H_BC]<<\n{HBoundaryConditions.ToMatrixString(nodesCount, nodesCount)}\n");
-            stringBuilder.Append($">>GLOBAL MATRIX [C]<<\n{C.ToMatrixString(nodesCount, nodesCount)}\n");
-            stringBuilder.Append(">>GLOBAL VECTOR {P}<<\n" + P.ToRowMatrix().ToMatrixString(1, nodesCount));
+            stringBuilder.Append($">>GLOBAL MATRIX [H]<<\n{H.ToMatrixString(NodesCount, NodesCount)}\n");
+            stringBuilder.Append($">>GLOBAL MATRIX [H_BC]<<\n{HBoundaryConditions.ToMatrixString(NodesCount, NodesCount)}\n");
+            stringBuilder.Append($">>GLOBAL MATRIX [C]<<\n{C.ToMatrixString(NodesCount, NodesCount)}\n");
+            stringBuilder.Append(">>GLOBAL VECTOR {P}<<\n" + P.ToRowMatrix().ToMatrixString(1, NodesCount));
 
             return stringBuilder.ToString();
         }

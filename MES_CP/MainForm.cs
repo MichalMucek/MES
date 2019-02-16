@@ -112,10 +112,45 @@ namespace MES_CP
                 toolStripInitialDataStatusLabel.Text = "Initial data from JSON file has been loaded.";
 
                 if (IsEveryInitialDataTextBoxFilled())
-                    EnableSimulationAndSaveToJsonButtons();
+                    EnableGenerateGridAndSaveToJsonButtons();
 
                 openJsonFileDialog.FileName = "";
             }
+        }
+
+        private void GenerateNewGridFromInitialDataButton_Click(object sender, EventArgs e)
+        {
+            SetInitialData();
+
+            Invoke((MethodInvoker) delegate
+            {
+                toolStripGridAndSimulationStatusLabel.Text = "Creating new grid...";
+                grid = new Grid(initialData);
+            });
+
+            saveGridDetailsToTextFileButton.Enabled = true;
+
+            elementIdNumericUpDown.Enabled = true;
+            elementIdNumericUpDown.Minimum = 1;
+            elementIdNumericUpDown.Maximum = grid.ElementsCount;
+
+            elementNode0IdLinkLabel.Enabled = true;
+            elementNode1IdLinkLabel.Enabled = true;
+            elementNode2IdLinkLabel.Enabled = true;
+            elementNode3IdLinkLabel.Enabled = true;
+
+            elementMatricesAndVectorComboBox.Enabled = true;
+            elementMatricesAndVectorDataGridView.Rows.Add(4);
+            elementMatricesAndVectorComboBox.SelectedIndex = 0;
+
+            nodeIdNumericUpDown.Enabled = true;
+            nodeIdNumericUpDown.Minimum = 1;
+            nodeIdNumericUpDown.Maximum = grid.NodesCount;
+            nodeIdNumericUpDown.Value = grid.Elements[0].Nodes[0].Id;
+
+            // For GUI update purpose
+            elementIdNumericUpDown.Value = elementIdNumericUpDown.Maximum;
+            elementIdNumericUpDown.Value = 1;
         }
 
         private void StartSimulationButton_Click(object sender, EventArgs e)
@@ -136,10 +171,10 @@ namespace MES_CP
 
             cancellationTokenSource = new CancellationTokenSource();
 
-            ThreadPool.QueueUserWorkItem(Async_LongRunningTask_RunSimulation, cancellationTokenSource.Token);
+            ThreadPool.QueueUserWorkItem(Async_LongRunningTask_StartSimulation, cancellationTokenSource.Token);
         }
 
-        private void Async_LongRunningTask_RunSimulation(object state)
+        private void Async_LongRunningTask_StartSimulation(object state)
         {
             Invoke((MethodInvoker) delegate
             {
@@ -167,8 +202,8 @@ namespace MES_CP
                 toolStripProgressBar.Visible = false;
                 toolStripProgressLabel.Visible = false;
 
-                if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
-                else DisableSimulationAndSaveToJsonButtons();
+                if (IsEveryInitialDataTextBoxFilled()) EnableGenerateGridAndSaveToJsonButtons();
+                else DisableGenerateGridnAndSaveToJsonButtons();
             });
         }
 
@@ -216,89 +251,90 @@ namespace MES_CP
             }
         }
 
-        private void EnableSimulationAndSaveToJsonButtons()
+        private void EnableGenerateGridAndSaveToJsonButtons()
         {
             saveInitialDataToJsonFileButton.Enabled = true;
+            generateNewGridFromInitialDataButton.Enabled = true;
 
             if (!isSimulationRunning) startSimulationButton.Enabled = true;
         }
 
-        private void DisableSimulationAndSaveToJsonButtons()
+        private void DisableGenerateGridnAndSaveToJsonButtons()
         {
             saveInitialDataToJsonFileButton.Enabled = false;
-            startSimulationButton.Enabled = false;
+            generateNewGridFromInitialDataButton.Enabled = false;
         }
 
         private void GridLengthTextBox_Leave(object sender, EventArgs e)
         {
-            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
-            else DisableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableGenerateGridAndSaveToJsonButtons();
+            else DisableGenerateGridnAndSaveToJsonButtons();
         }
 
         private void GridHeightTextBox_Leave(object sender, EventArgs e)
         {
-            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
-            else DisableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableGenerateGridAndSaveToJsonButtons();
+            else DisableGenerateGridnAndSaveToJsonButtons();
         }
 
         private void NodesCountAlongTheLengthTextBox_Leave(object sender, EventArgs e)
         {
-            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
-            else DisableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableGenerateGridAndSaveToJsonButtons();
+            else DisableGenerateGridnAndSaveToJsonButtons();
         }
 
         private void NodesCountAlongTheHeightTextBox_Leave(object sender, EventArgs e)
         {
-            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
-            else DisableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableGenerateGridAndSaveToJsonButtons();
+            else DisableGenerateGridnAndSaveToJsonButtons();
         }
 
         private void InitialTemperatureTextBox_Leave(object sender, EventArgs e)
         {
-            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
-            else DisableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableGenerateGridAndSaveToJsonButtons();
+            else DisableGenerateGridnAndSaveToJsonButtons();
         }
 
         private void AmbientTemperatureTextBox_Leave(object sender, EventArgs e)
         {
-            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
-            else DisableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableGenerateGridAndSaveToJsonButtons();
+            else DisableGenerateGridnAndSaveToJsonButtons();
         }
 
         private void SimulationTimeTextBox_Leave(object sender, EventArgs e)
         {
-            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
-            else DisableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableGenerateGridAndSaveToJsonButtons();
+            else DisableGenerateGridnAndSaveToJsonButtons();
         }
 
         private void SimulationTimeStepTextBox_Leave(object sender, EventArgs e)
         {
-            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
-            else DisableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableGenerateGridAndSaveToJsonButtons();
+            else DisableGenerateGridnAndSaveToJsonButtons();
         }
 
         private void AlphaTextBox_Leave(object sender, EventArgs e)
         {
-            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
-            else DisableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableGenerateGridAndSaveToJsonButtons();
+            else DisableGenerateGridnAndSaveToJsonButtons();
         }
 
         private void SpecificHeatTextBox_Leave(object sender, EventArgs e)
         {
-            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
-            else DisableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableGenerateGridAndSaveToJsonButtons();
+            else DisableGenerateGridnAndSaveToJsonButtons();
         }
 
         private void ConductivityTextBox_Leave(object sender, EventArgs e)
         {
-            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
-            else DisableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableGenerateGridAndSaveToJsonButtons();
+            else DisableGenerateGridnAndSaveToJsonButtons();
         }
 
         private void DensityTextBox_Leave(object sender, EventArgs e)
         {
-            if (IsEveryInitialDataTextBoxFilled()) EnableSimulationAndSaveToJsonButtons();
-            else DisableSimulationAndSaveToJsonButtons();
+            if (IsEveryInitialDataTextBoxFilled()) EnableGenerateGridAndSaveToJsonButtons();
+            else DisableGenerateGridnAndSaveToJsonButtons();
         }
 
         private void GridLengthTextBox_KeyPress(object sender, KeyPressEventArgs e)
@@ -359,6 +395,113 @@ namespace MES_CP
         private void DensityTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             e.Handled = IsPositiveNumberTyped(sender, e);
+        }
+
+        private void ElementIdNumericUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            Element selectedElement = grid.Elements[(int)elementIdNumericUpDown.Value - 1];
+
+            nodeIdNumericUpDown.Value = selectedElement.Nodes[0].Id;
+
+            // Nodes IDs
+            elementNode0IdLinkLabel.Text = $"{selectedElement.Nodes[0].Id}";
+            elementNode1IdLinkLabel.Text = $"{selectedElement.Nodes[1].Id}";
+            elementNode2IdLinkLabel.Text = $"{selectedElement.Nodes[2].Id}";
+            elementNode3IdLinkLabel.Text = $"{selectedElement.Nodes[3].Id}";
+
+            // Side length -> Bottom
+            if (selectedElement.BoundarySides[0])
+                bottomSideLengthLabel.Text =
+                    $"Bottom [Boundary]: {selectedElement.SidesLengths[0]} m";
+            else
+                bottomSideLengthLabel.Text =
+                    $"Bottom: {selectedElement.SidesLengths[0]} m";
+
+            // Side length -> Right
+            if (selectedElement.BoundarySides[1])
+                rightSideLengthLabel.Text =
+                    $"Right [Boundary]: {selectedElement.SidesLengths[1]} m";
+            else
+                rightSideLengthLabel.Text =
+                    $"Right: {selectedElement.SidesLengths[1]} m";
+
+            // Side length -> Top
+            if (selectedElement.BoundarySides[2])
+                topSideLengthLabel.Text =
+                    $"Top [Boundary]: {selectedElement.SidesLengths[2]} m";
+            else
+                topSideLengthLabel.Text =
+                    $"Top: {selectedElement.SidesLengths[2]} m";
+
+            // Side length -> Left
+            if (selectedElement.BoundarySides[3])
+                leftSideLengthLabel.Text =
+                    $"Left [Boundary]: {selectedElement.SidesLengths[3]} m";
+            else
+                leftSideLengthLabel.Text =
+                    $"Left: {selectedElement.SidesLengths[3]} m";
+
+            ElementMatricesAndVectorComboBox_SelectedIndexChanged(sender, e);
+        }
+
+        private void ElementNode0IdLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Element selectedElement = grid.Elements[(int)elementIdNumericUpDown.Value - 1];
+
+            nodeIdNumericUpDown.Value = selectedElement.Nodes[0].Id;
+        }
+
+        private void ElementNode1IdLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Element selectedElement = grid.Elements[(int)elementIdNumericUpDown.Value - 1];
+
+            nodeIdNumericUpDown.Value = selectedElement.Nodes[1].Id;
+        }
+
+        private void ElementNode2IdLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Element selectedElement = grid.Elements[(int)elementIdNumericUpDown.Value - 1];
+
+            nodeIdNumericUpDown.Value = selectedElement.Nodes[2].Id;
+        }
+
+        private void ElementNode3IdLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Element selectedElement = grid.Elements[(int)elementIdNumericUpDown.Value - 1];
+
+            nodeIdNumericUpDown.Value = selectedElement.Nodes[3].Id;
+        }
+
+        private void ElementMatricesAndVectorComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Element selectedElement = grid.Elements[(int)elementIdNumericUpDown.Value - 1];
+
+            switch (elementMatricesAndVectorComboBox.SelectedIndex)
+            {
+                case 0: // [H] Matrix
+                    elementMatricesAndVectorDataGridView.RowCount = 4;
+                    for (int rowIndex = 0; rowIndex < selectedElement.H.RowCount; rowIndex++)
+                        for (int columnIndex = 0; columnIndex < selectedElement.H.ColumnCount; columnIndex++)
+                            elementMatricesAndVectorDataGridView.Rows[rowIndex].Cells[columnIndex].Value = selectedElement.H.Row(rowIndex)[columnIndex];
+                    break;
+                case 1: // [H_BC] Matrix
+                    elementMatricesAndVectorDataGridView.RowCount = 4;
+                    for (int rowIndex = 0; rowIndex < selectedElement.HBoundaryConditions.RowCount; rowIndex++)
+                        for (int columnIndex = 0; columnIndex < selectedElement.HBoundaryConditions.ColumnCount; columnIndex++)
+                            elementMatricesAndVectorDataGridView.Rows[rowIndex].Cells[columnIndex].Value = selectedElement.HBoundaryConditions.Row(rowIndex)[columnIndex];
+                    break;
+                case 2: // [C] Matrix
+                    elementMatricesAndVectorDataGridView.RowCount = 4;
+                    for (int rowIndex = 0; rowIndex < selectedElement.C.RowCount; rowIndex++)
+                        for (int columnIndex = 0; columnIndex < selectedElement.C.ColumnCount; columnIndex++)
+                            elementMatricesAndVectorDataGridView.Rows[rowIndex].Cells[columnIndex].Value = selectedElement.C.Row(rowIndex)[columnIndex];
+                    break;
+                case 3: // {P} Vactor
+                    elementMatricesAndVectorDataGridView.RowCount = 1;
+                    for (int index = 0; index < selectedElement.P.Count; index++)
+                        elementMatricesAndVectorDataGridView.Rows[0].Cells[index].Value = selectedElement.P[index];
+                    break;
+            }
         }
     }
 }
