@@ -399,7 +399,7 @@ namespace MES_CP
 
         private void ElementIdNumericUpDown_ValueChanged(object sender, EventArgs e)
         {
-            Element selectedElement = grid.Elements[(int)elementIdNumericUpDown.Value - 1];
+            Element selectedElement = grid.Elements[(int) elementIdNumericUpDown.Value - 1];
 
             nodeIdNumericUpDown.Value = selectedElement.Nodes[0].Id;
 
@@ -474,7 +474,7 @@ namespace MES_CP
 
         private void ElementMatricesAndVectorComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Element selectedElement = grid.Elements[(int)elementIdNumericUpDown.Value - 1];
+            Element selectedElement = grid.Elements[(int) elementIdNumericUpDown.Value - 1];
 
             switch (elementMatricesAndVectorComboBox.SelectedIndex)
             {
@@ -502,6 +502,16 @@ namespace MES_CP
                         elementMatricesAndVectorDataGridView.Rows[0].Cells[index].Value = selectedElement.P[index];
                     break;
             }
+        }
+
+        private void nodeIdNumericUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            Node selectedNode = grid.Nodes[(int) nodeIdNumericUpDown.Value - 1];
+
+            nodeXLabel.Text = $"X: {selectedNode.X}";
+            nodeYLabel.Text = $"Y: {selectedNode.Y}";
+            nodeIsBoundaryLabel.Text = $"Boundary: {selectedNode.IsBoundary}";
+            nodeTemperatureLabel.Text = $"Temperature: {selectedNode.InitialTemperature}";
         }
     }
 }

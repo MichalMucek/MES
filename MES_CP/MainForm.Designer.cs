@@ -96,6 +96,10 @@
             this.elementIdNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.generateNewGridFromInitialDataButton = new System.Windows.Forms.Button();
             this.simulationTabPage = new System.Windows.Forms.TabPage();
+            this.nodeXLabel = new System.Windows.Forms.Label();
+            this.nodeYLabel = new System.Windows.Forms.Label();
+            this.nodeTemperatureLabel = new System.Windows.Forms.Label();
+            this.nodeIsBoundaryLabel = new System.Windows.Forms.Label();
             this.initialDataGroupBox.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.tabControl.SuspendLayout();
@@ -544,11 +548,15 @@
             // 
             // nodesGroupBox
             // 
+            this.nodesGroupBox.Controls.Add(this.nodeIsBoundaryLabel);
+            this.nodesGroupBox.Controls.Add(this.nodeTemperatureLabel);
+            this.nodesGroupBox.Controls.Add(this.nodeYLabel);
+            this.nodesGroupBox.Controls.Add(this.nodeXLabel);
             this.nodesGroupBox.Controls.Add(this.nodeIdLabel);
             this.nodesGroupBox.Controls.Add(this.nodeIdNumericUpDown);
             this.nodesGroupBox.Location = new System.Drawing.Point(528, 6);
             this.nodesGroupBox.Name = "nodesGroupBox";
-            this.nodesGroupBox.Size = new System.Drawing.Size(363, 392);
+            this.nodesGroupBox.Size = new System.Drawing.Size(363, 136);
             this.nodesGroupBox.TabIndex = 38;
             this.nodesGroupBox.TabStop = false;
             this.nodesGroupBox.Text = "Node";
@@ -569,6 +577,7 @@
             this.nodeIdNumericUpDown.Name = "nodeIdNumericUpDown";
             this.nodeIdNumericUpDown.Size = new System.Drawing.Size(52, 20);
             this.nodeIdNumericUpDown.TabIndex = 0;
+            this.nodeIdNumericUpDown.ValueChanged += new System.EventHandler(this.nodeIdNumericUpDown_ValueChanged);
             // 
             // elementGroupBox
             // 
@@ -816,6 +825,42 @@
             this.simulationTabPage.TabIndex = 1;
             this.simulationTabPage.Text = "Simulation";
             // 
+            // nodeXLabel
+            // 
+            this.nodeXLabel.AutoSize = true;
+            this.nodeXLabel.Location = new System.Drawing.Point(6, 42);
+            this.nodeXLabel.Name = "nodeXLabel";
+            this.nodeXLabel.Size = new System.Drawing.Size(17, 13);
+            this.nodeXLabel.TabIndex = 3;
+            this.nodeXLabel.Text = "X:";
+            // 
+            // nodeYLabel
+            // 
+            this.nodeYLabel.AutoSize = true;
+            this.nodeYLabel.Location = new System.Drawing.Point(6, 68);
+            this.nodeYLabel.Name = "nodeYLabel";
+            this.nodeYLabel.Size = new System.Drawing.Size(17, 13);
+            this.nodeYLabel.TabIndex = 4;
+            this.nodeYLabel.Text = "Y:";
+            // 
+            // nodeTemperatureLabel
+            // 
+            this.nodeTemperatureLabel.AutoSize = true;
+            this.nodeTemperatureLabel.Location = new System.Drawing.Point(6, 120);
+            this.nodeTemperatureLabel.Name = "nodeTemperatureLabel";
+            this.nodeTemperatureLabel.Size = new System.Drawing.Size(70, 13);
+            this.nodeTemperatureLabel.TabIndex = 5;
+            this.nodeTemperatureLabel.Text = "Temperature:";
+            // 
+            // nodeIsBoundaryLabel
+            // 
+            this.nodeIsBoundaryLabel.AutoSize = true;
+            this.nodeIsBoundaryLabel.Location = new System.Drawing.Point(6, 94);
+            this.nodeIsBoundaryLabel.Name = "nodeIsBoundaryLabel";
+            this.nodeIsBoundaryLabel.Size = new System.Drawing.Size(55, 13);
+            this.nodeIsBoundaryLabel.TabIndex = 6;
+            this.nodeIsBoundaryLabel.Text = "Boundary:";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -919,5 +964,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
         private System.Windows.Forms.ComboBox elementMatricesAndVectorComboBox;
+        private System.Windows.Forms.Label nodeIsBoundaryLabel;
+        private System.Windows.Forms.Label nodeTemperatureLabel;
+        private System.Windows.Forms.Label nodeYLabel;
+        private System.Windows.Forms.Label nodeXLabel;
     }
 }
