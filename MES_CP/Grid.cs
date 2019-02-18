@@ -80,7 +80,7 @@ namespace MES_CP
 
         private void AddElements(int nH)
         {
-            for (int nodeId = 1, i = 0; nodeId <= ElementsCount; i++)
+            for (int elementId = 1, i = 0; elementId <= ElementsCount; i++)
             {
                 if (Nodes[i].Id % nH != 0)
                 {
@@ -91,15 +91,15 @@ namespace MES_CP
                         Nodes[i + 1]
                     };
 
-                    Elements.Add(new Element(elementNodes, nodeId, InitialData));
+                    Elements.Add(new Element(elementNodes, elementId, InitialData));
 
                     // GUI update
                     Program.MainForm.Invoke((MethodInvoker) delegate
                     {
-                        Program.MainForm.SimulationProgressBarValue = (nodeId * 100) / ElementsCount;
+                        Program.MainForm.SimulationProgressBarValue = (elementId * 100) / ElementsCount;
                     });
 
-                    nodeId++;
+                    elementId++;
                 }
             }
         }
