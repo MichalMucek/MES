@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -72,6 +73,11 @@ namespace MES_CP
             InitializeComponent();
             openJsonFileDialog.InitialDirectory = Application.StartupPath;
             saveTextFileDialog.InitialDirectory = Application.StartupPath;
+            initialDataGroupBox.SuspendLayout();
+            elementGroupBox.SuspendLayout();
+            nodesGroupBox.SuspendLayout();
+            tabControl.SuspendLayout();
+            //SuspendLayout();
         }
 
         private bool IsPositiveNumberTyped(object sender, KeyPressEventArgs e)
@@ -136,8 +142,13 @@ namespace MES_CP
 
             grid = new Grid(initialData);
 
+            BeginInvoke((MethodInvoker) DrawGridInPictureBox);
+
             Invoke((MethodInvoker) delegate
             {
+                toolStripProgressLabel.Visible = false;
+                toolStripProgressBar.Visible = false;
+
                 toolStripGridAndSimulationStatusLabel.Text = "Grid is ready for simulation :)";
 
                 simulationDurationLabel.Text =
@@ -171,6 +182,79 @@ namespace MES_CP
                 elementIdNumericUpDown.Value = elementIdNumericUpDown.Maximum;
                 elementIdNumericUpDown.Value = 1;
             });
+        }
+
+        private void DrawGridInPictureBox()
+        {
+            int gridLengthInPixels = 0, gridHeightInPixels = 0;
+            int currentGridPictureBoxWidth = gridPictureBox.Width;
+            int currentGridPictureBoxHeight = gridPictureBox.Height;
+            int linesCountAlongTheLength = grid.InitialData.NodesCountAlongTheLength;
+            int linesCountAlongTheHeight = grid.InitialData.NodesCountAlongTheHeight;
+
+            if (currentGridPictureBoxWidth >= currentGridPictureBoxHeight)
+            {
+                if (grid.InitialData.Length >= grid.InitialData.Height)
+                {
+                    gridLengthInPixels = currentGridPictureBoxWidth;
+                    gridHeightInPixels = (int)((grid.InitialData.Height / grid.InitialData.Length) * gridLengthInPixels);
+                }
+                else if (grid.InitialData.Height > grid.InitialData.Length)
+                {
+                    gridHeightInPixels = currentGridPictureBoxHeight;
+                    gridLengthInPixels = (int)((grid.InitialData.Length / grid.InitialData.Height) * gridHeightInPixels);
+                }
+            }
+            else if (currentGridPictureBoxHeight > currentGridPictureBoxWidth)
+            {
+                if (grid.InitialData.Length >= grid.InitialData.Height)
+                {
+                    gridLengthInPixels = currentGridPictureBoxWidth;
+                    gridHeightInPixels = (int)((grid.InitialData.Height / grid.InitialData.Length) * gridLengthInPixels);
+                }
+                else if (grid.InitialData.Height > grid.InitialData.Length)
+                {
+                    gridHeightInPixels = currentGridPictureBoxHeight;
+                    gridLengthInPixels = (int)((grid.InitialData.Length / grid.InitialData.Height) * gridHeightInPixels);
+                }
+            }
+
+            float distanceBetweenLinesAlongTheLengthInPixels = (float) gridLengthInPixels / (linesCountAlongTheLength - 1);
+            float distanceBetweenLinesAlongTheHeightInPixels = (float) gridHeightInPixels / (linesCountAlongTheHeight - 1);
+
+            Bitmap gridBitmap = new Bitmap(gridLengthInPixels, gridHeightInPixels);
+            Pen blackPen = new Pen(Color.Black, 1);
+            PointF[] linesPointFs = new PointF[2];
+
+            using (var image = Graphics.FromImage(gridBitmap))
+            {
+                image.Clear(Color.White);
+
+                linesPointFs[0].Y = 0;
+                linesPointFs[1].Y = gridHeightInPixels - 1;
+
+                for (int i = 0; i < linesCountAlongTheLength; i++)
+                {
+                    linesPointFs[0].X = i > 0 ? i == linesCountAlongTheLength - 1 ? gridLengthInPixels - 1 : i * distanceBetweenLinesAlongTheLengthInPixels : 0;
+                    linesPointFs[1].X = linesPointFs[0].X;
+
+                    image.DrawLine(blackPen, linesPointFs[0], linesPointFs[1]);
+                }
+
+                linesPointFs[0].X = 0;
+                linesPointFs[1].X = gridLengthInPixels - 1;
+
+                for (int i = 0; i < linesCountAlongTheHeight; i++)
+                {
+                    linesPointFs[0].Y = i > 0 ? i == linesCountAlongTheHeight - 1 ? gridHeightInPixels - 1 : i * distanceBetweenLinesAlongTheHeightInPixels : 0;
+                    linesPointFs[1].Y = linesPointFs[0].Y;
+
+                    image.DrawLine(blackPen, linesPointFs[0], linesPointFs[1]);
+                }
+            }
+
+            gridPictureBox.Image = gridBitmap;
+            gridPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
         }
 
         private void StartSimulationButton_Click(object sender, EventArgs e)
@@ -598,6 +682,11 @@ namespace MES_CP
                 $"Minimum temperature: {grid.TimeTemperature[selectedSimulationStep].Value.Minimum()}°C";
             simulationResultsMaxTempLabel.Text =
                 $"Maximum temperature: {grid.TimeTemperature[selectedSimulationStep].Value.Maximum()}°C";
+        }
+
+        private void GridPictureBox_SizeChanged(object sender, EventArgs e)
+        {
+            if (grid != null) BeginInvoke((MethodInvoker) DrawGridInPictureBox);
         }
     }
 }

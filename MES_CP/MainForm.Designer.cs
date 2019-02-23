@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
             this.initialDataGroupBox = new System.Windows.Forms.GroupBox();
             this.saveInitialDataToJsonFileButton = new System.Windows.Forms.Button();
             this.loadInitialDataJsonFileButton = new System.Windows.Forms.Button();
@@ -109,6 +109,8 @@
             this.simulationDurationLabel = new System.Windows.Forms.Label();
             this.simulationAmbientTemperatureLabel = new System.Windows.Forms.Label();
             this.simulationTimeStepLabel = new System.Windows.Forms.Label();
+            this.gridVisualizationGroupBox = new System.Windows.Forms.GroupBox();
+            this.gridPictureBox = new System.Windows.Forms.PictureBox();
             this.initialDataGroupBox.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.tabControl.SuspendLayout();
@@ -123,6 +125,8 @@
             this.simulationResultsGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.simulationResultsStepNumericUpDown)).BeginInit();
             this.simulationDetailsGroupBox.SuspendLayout();
+            this.gridVisualizationGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // initialDataGroupBox
@@ -156,10 +160,10 @@
             this.initialDataGroupBox.Controls.Add(this.initialTemperatureTextBox);
             this.initialDataGroupBox.Controls.Add(this.initialDataInitialTemperatureLabel);
             this.initialDataGroupBox.Location = new System.Drawing.Point(12, 12);
-            this.initialDataGroupBox.MaximumSize = new System.Drawing.Size(279, 459);
-            this.initialDataGroupBox.MinimumSize = new System.Drawing.Size(279, 459);
+            this.initialDataGroupBox.MaximumSize = new System.Drawing.Size(279, 354);
+            this.initialDataGroupBox.MinimumSize = new System.Drawing.Size(279, 354);
             this.initialDataGroupBox.Name = "initialDataGroupBox";
-            this.initialDataGroupBox.Size = new System.Drawing.Size(279, 459);
+            this.initialDataGroupBox.Size = new System.Drawing.Size(279, 354);
             this.initialDataGroupBox.TabIndex = 0;
             this.initialDataGroupBox.TabStop = false;
             this.initialDataGroupBox.Text = "Initial data";
@@ -168,7 +172,7 @@
             // 
             this.saveInitialDataToJsonFileButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.saveInitialDataToJsonFileButton.Enabled = false;
-            this.saveInitialDataToJsonFileButton.Location = new System.Drawing.Point(143, 430);
+            this.saveInitialDataToJsonFileButton.Location = new System.Drawing.Point(143, 325);
             this.saveInitialDataToJsonFileButton.Name = "saveInitialDataToJsonFileButton";
             this.saveInitialDataToJsonFileButton.Size = new System.Drawing.Size(130, 23);
             this.saveInitialDataToJsonFileButton.TabIndex = 13;
@@ -179,7 +183,7 @@
             // loadInitialDataJsonFileButton
             // 
             this.loadInitialDataJsonFileButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.loadInitialDataJsonFileButton.Location = new System.Drawing.Point(6, 430);
+            this.loadInitialDataJsonFileButton.Location = new System.Drawing.Point(6, 325);
             this.loadInitialDataJsonFileButton.Name = "loadInitialDataJsonFileButton";
             this.loadInitialDataJsonFileButton.Size = new System.Drawing.Size(130, 23);
             this.loadInitialDataJsonFileButton.TabIndex = 0;
@@ -419,7 +423,7 @@
             // 
             this.startSimulationButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.startSimulationButton.Enabled = false;
-            this.startSimulationButton.Location = new System.Drawing.Point(3, 404);
+            this.startSimulationButton.Location = new System.Drawing.Point(3, 546);
             this.startSimulationButton.Name = "startSimulationButton";
             this.startSimulationButton.Size = new System.Drawing.Size(87, 23);
             this.startSimulationButton.TabIndex = 0;
@@ -431,7 +435,7 @@
             // 
             this.saveResultToTextFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.saveResultToTextFileButton.Enabled = false;
-            this.saveResultToTextFileButton.Location = new System.Drawing.Point(189, 404);
+            this.saveResultToTextFileButton.Location = new System.Drawing.Point(189, 546);
             this.saveResultToTextFileButton.Name = "saveResultToTextFileButton";
             this.saveResultToTextFileButton.Size = new System.Drawing.Size(120, 23);
             this.saveResultToTextFileButton.TabIndex = 2;
@@ -454,7 +458,7 @@
             // 
             this.saveGridDetailsToTextFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.saveGridDetailsToTextFileButton.Enabled = false;
-            this.saveGridDetailsToTextFileButton.Location = new System.Drawing.Point(114, 404);
+            this.saveGridDetailsToTextFileButton.Location = new System.Drawing.Point(114, 546);
             this.saveGridDetailsToTextFileButton.Name = "saveGridDetailsToTextFileButton";
             this.saveGridDetailsToTextFileButton.Size = new System.Drawing.Size(142, 23);
             this.saveGridDetailsToTextFileButton.TabIndex = 1;
@@ -469,9 +473,10 @@
             this.toolStripGridAndSimulationStatusLabel,
             this.toolStripProgressBar,
             this.toolStripProgressLabel});
-            this.statusStrip.Location = new System.Drawing.Point(0, 474);
+            this.statusStrip.Location = new System.Drawing.Point(0, 616);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(1119, 22);
+            this.statusStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
+            this.statusStrip.Size = new System.Drawing.Size(1248, 22);
             this.statusStrip.TabIndex = 6;
             this.statusStrip.Text = "statusStrip";
             // 
@@ -510,7 +515,7 @@
             // 
             this.stopSimulationButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.stopSimulationButton.Enabled = false;
-            this.stopSimulationButton.Location = new System.Drawing.Point(96, 404);
+            this.stopSimulationButton.Location = new System.Drawing.Point(96, 546);
             this.stopSimulationButton.Name = "stopSimulationButton";
             this.stopSimulationButton.Size = new System.Drawing.Size(87, 23);
             this.stopSimulationButton.TabIndex = 7;
@@ -520,41 +525,41 @@
             // 
             // tabControl
             // 
-            this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+            this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl.Controls.Add(this.gridTabPage);
             this.tabControl.Controls.Add(this.simulationTabPage);
             this.tabControl.Location = new System.Drawing.Point(297, 12);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(810, 459);
+            this.tabControl.Size = new System.Drawing.Size(939, 601);
             this.tabControl.TabIndex = 8;
             // 
             // gridTabPage
             // 
             this.gridTabPage.BackColor = System.Drawing.Color.White;
+            this.gridTabPage.Controls.Add(this.gridVisualizationGroupBox);
             this.gridTabPage.Controls.Add(this.nodesGroupBox);
             this.gridTabPage.Controls.Add(this.elementGroupBox);
-            this.gridTabPage.Controls.Add(this.saveGridDetailsToTextFileButton);
             this.gridTabPage.Controls.Add(this.generateNewGridFromInitialDataButton);
+            this.gridTabPage.Controls.Add(this.saveGridDetailsToTextFileButton);
             this.gridTabPage.Location = new System.Drawing.Point(4, 22);
             this.gridTabPage.Name = "gridTabPage";
             this.gridTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.gridTabPage.Size = new System.Drawing.Size(802, 433);
+            this.gridTabPage.Size = new System.Drawing.Size(931, 575);
             this.gridTabPage.TabIndex = 0;
             this.gridTabPage.Text = "Grid";
             // 
             // nodesGroupBox
             // 
-            this.nodesGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.nodesGroupBox.Controls.Add(this.nodeIsBoundaryLabel);
             this.nodesGroupBox.Controls.Add(this.nodeTemperatureLabel);
             this.nodesGroupBox.Controls.Add(this.nodeYLabel);
             this.nodesGroupBox.Controls.Add(this.nodeXLabel);
             this.nodesGroupBox.Controls.Add(this.nodeIdLabel);
             this.nodesGroupBox.Controls.Add(this.nodeIdNumericUpDown);
-            this.nodesGroupBox.Location = new System.Drawing.Point(404, 6);
+            this.nodesGroupBox.Location = new System.Drawing.Point(6, 404);
             this.nodesGroupBox.Name = "nodesGroupBox";
             this.nodesGroupBox.Size = new System.Drawing.Size(392, 136);
             this.nodesGroupBox.TabIndex = 38;
@@ -617,8 +622,6 @@
             // 
             // elementGroupBox
             // 
-            this.elementGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
             this.elementGroupBox.Controls.Add(this.elementMatricesAndVectorDataGridView);
             this.elementGroupBox.Controls.Add(this.elementMatricesAndVectorComboBox);
             this.elementGroupBox.Controls.Add(this.flowLayoutPanel1);
@@ -645,6 +648,7 @@
             this.elementMatricesAndVectorDataGridView.AllowUserToResizeRows = false;
             this.elementMatricesAndVectorDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.elementMatricesAndVectorDataGridView.BackgroundColor = System.Drawing.SystemColors.Control;
             this.elementMatricesAndVectorDataGridView.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
             this.elementMatricesAndVectorDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.elementMatricesAndVectorDataGridView.ColumnHeadersVisible = false;
@@ -653,14 +657,15 @@
             this.Column2,
             this.Column3,
             this.Column4});
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.elementMatricesAndVectorDataGridView.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle14.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            dataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.elementMatricesAndVectorDataGridView.DefaultCellStyle = dataGridViewCellStyle14;
+            this.elementMatricesAndVectorDataGridView.GridColor = System.Drawing.SystemColors.Control;
             this.elementMatricesAndVectorDataGridView.Location = new System.Drawing.Point(6, 183);
             this.elementMatricesAndVectorDataGridView.MinimumSize = new System.Drawing.Size(0, 203);
             this.elementMatricesAndVectorDataGridView.Name = "elementMatricesAndVectorDataGridView";
@@ -847,7 +852,7 @@
             // 
             this.generateNewGridFromInitialDataButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.generateNewGridFromInitialDataButton.Enabled = false;
-            this.generateNewGridFromInitialDataButton.Location = new System.Drawing.Point(6, 404);
+            this.generateNewGridFromInitialDataButton.Location = new System.Drawing.Point(6, 546);
             this.generateNewGridFromInitialDataButton.Name = "generateNewGridFromInitialDataButton";
             this.generateNewGridFromInitialDataButton.Size = new System.Drawing.Size(102, 23);
             this.generateNewGridFromInitialDataButton.TabIndex = 0;
@@ -866,7 +871,7 @@
             this.simulationTabPage.Location = new System.Drawing.Point(4, 22);
             this.simulationTabPage.Name = "simulationTabPage";
             this.simulationTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.simulationTabPage.Size = new System.Drawing.Size(802, 433);
+            this.simulationTabPage.Size = new System.Drawing.Size(931, 575);
             this.simulationTabPage.TabIndex = 1;
             this.simulationTabPage.Text = "Simulation";
             // 
@@ -879,7 +884,7 @@
             this.simulationResultsGroupBox.Controls.Add(this.simulationResultsStepLabel);
             this.simulationResultsGroupBox.Location = new System.Drawing.Point(6, 96);
             this.simulationResultsGroupBox.Name = "simulationResultsGroupBox";
-            this.simulationResultsGroupBox.Size = new System.Drawing.Size(303, 302);
+            this.simulationResultsGroupBox.Size = new System.Drawing.Size(396, 236);
             this.simulationResultsGroupBox.TabIndex = 13;
             this.simulationResultsGroupBox.TabStop = false;
             this.simulationResultsGroupBox.Text = "Results";
@@ -941,7 +946,7 @@
             this.simulationDetailsGroupBox.Controls.Add(this.simulationTimeStepLabel);
             this.simulationDetailsGroupBox.Location = new System.Drawing.Point(6, 6);
             this.simulationDetailsGroupBox.Name = "simulationDetailsGroupBox";
-            this.simulationDetailsGroupBox.Size = new System.Drawing.Size(303, 84);
+            this.simulationDetailsGroupBox.Size = new System.Drawing.Size(396, 84);
             this.simulationDetailsGroupBox.TabIndex = 12;
             this.simulationDetailsGroupBox.TabStop = false;
             this.simulationDetailsGroupBox.Text = "Details";
@@ -973,15 +978,40 @@
             this.simulationTimeStepLabel.TabIndex = 9;
             this.simulationTimeStepLabel.Text = "Time step:";
             // 
+            // gridVisualizationGroupBox
+            // 
+            this.gridVisualizationGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gridVisualizationGroupBox.Controls.Add(this.gridPictureBox);
+            this.gridVisualizationGroupBox.Location = new System.Drawing.Point(404, 6);
+            this.gridVisualizationGroupBox.Name = "gridVisualizationGroupBox";
+            this.gridVisualizationGroupBox.Size = new System.Drawing.Size(521, 534);
+            this.gridVisualizationGroupBox.TabIndex = 39;
+            this.gridVisualizationGroupBox.TabStop = false;
+            this.gridVisualizationGroupBox.Text = "Grid view";
+            // 
+            // gridPictureBox
+            // 
+            this.gridPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gridPictureBox.Location = new System.Drawing.Point(6, 19);
+            this.gridPictureBox.Name = "gridPictureBox";
+            this.gridPictureBox.Size = new System.Drawing.Size(509, 509);
+            this.gridPictureBox.TabIndex = 0;
+            this.gridPictureBox.TabStop = false;
+            this.gridPictureBox.SizeChanged += new System.EventHandler(this.GridPictureBox_SizeChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1119, 496);
+            this.ClientSize = new System.Drawing.Size(1248, 638);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.initialDataGroupBox);
-            this.MinimumSize = new System.Drawing.Size(1135, 535);
+            this.MinimumSize = new System.Drawing.Size(1264, 677);
             this.Name = "MainForm";
             this.Text = "FEM - Temperature distribution 2D";
             this.initialDataGroupBox.ResumeLayout(false);
@@ -1005,6 +1035,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.simulationResultsStepNumericUpDown)).EndInit();
             this.simulationDetailsGroupBox.ResumeLayout(false);
             this.simulationDetailsGroupBox.PerformLayout();
+            this.gridVisualizationGroupBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.gridPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1092,5 +1124,7 @@
         private System.Windows.Forms.Label simulationResultsMinTempLabel;
         private System.Windows.Forms.Label simulationResultsTimeLabel;
         private System.Windows.Forms.Label simulationResultsMaxTempLabel;
+        private System.Windows.Forms.GroupBox gridVisualizationGroupBox;
+        private System.Windows.Forms.PictureBox gridPictureBox;
     }
 }
