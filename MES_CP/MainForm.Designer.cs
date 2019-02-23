@@ -28,35 +28,34 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.initialDataGroupBox = new System.Windows.Forms.GroupBox();
             this.saveInitialDataToJsonFileButton = new System.Windows.Forms.Button();
             this.loadInitialDataJsonFileButton = new System.Windows.Forms.Button();
             this.densityTextBox = new System.Windows.Forms.TextBox();
             this.nodesCountAlongTheHeightTextBox = new System.Windows.Forms.TextBox();
-            this.nodesCountAlongTheHeightLabel = new System.Windows.Forms.Label();
-            this.densityLabel = new System.Windows.Forms.Label();
+            this.initialDataNodesCountAlongTheHeightLabel = new System.Windows.Forms.Label();
+            this.initialDataDensityLabel = new System.Windows.Forms.Label();
             this.nodesCountAlongTheLengthTextBox = new System.Windows.Forms.TextBox();
-            this.nodesCountAlongTheLengthLabel = new System.Windows.Forms.Label();
+            this.initialDataNodesCountAlongTheLengthLabel = new System.Windows.Forms.Label();
             this.conductivityTextBox = new System.Windows.Forms.TextBox();
             this.gridHeightTextBox = new System.Windows.Forms.TextBox();
-            this.gridHeightLabel = new System.Windows.Forms.Label();
-            this.conductivityLabel = new System.Windows.Forms.Label();
+            this.initialDataGridHeightLabel = new System.Windows.Forms.Label();
+            this.initialDataConductivityLabel = new System.Windows.Forms.Label();
             this.gridLengthTextBox = new System.Windows.Forms.TextBox();
-            this.gridLengthLabel = new System.Windows.Forms.Label();
+            this.initialDataGridLengthLabel = new System.Windows.Forms.Label();
             this.specificHeatTextBox = new System.Windows.Forms.TextBox();
-            this.specificHeatLabel = new System.Windows.Forms.Label();
+            this.initialDataSpecificHeatLabel = new System.Windows.Forms.Label();
             this.alphaTextBox = new System.Windows.Forms.TextBox();
-            this.alphaLabel = new System.Windows.Forms.Label();
+            this.initialDataConvectionCoefficientLabel = new System.Windows.Forms.Label();
             this.ambientTemperatureTextBox = new System.Windows.Forms.TextBox();
-            this.ambientTemperatureLabel = new System.Windows.Forms.Label();
+            this.initialDataAmbientTemperatureLabel = new System.Windows.Forms.Label();
             this.simulationTimeStepTextBox = new System.Windows.Forms.TextBox();
-            this.simulationTimeStepLabel = new System.Windows.Forms.Label();
+            this.initialDataSimulationTimeStepLabel = new System.Windows.Forms.Label();
             this.simulationTimeTextBox = new System.Windows.Forms.TextBox();
-            this.simulationTimeLabel = new System.Windows.Forms.Label();
+            this.initialDataSimulationTimeLabel = new System.Windows.Forms.Label();
             this.initialTemperatureTextBox = new System.Windows.Forms.TextBox();
-            this.initialTemperatureLabel = new System.Windows.Forms.Label();
-            this.richTextBox = new System.Windows.Forms.RichTextBox();
+            this.initialDataInitialTemperatureLabel = new System.Windows.Forms.Label();
             this.startSimulationButton = new System.Windows.Forms.Button();
             this.saveResultToTextFileButton = new System.Windows.Forms.Button();
             this.openJsonFileDialog = new System.Windows.Forms.OpenFileDialog();
@@ -72,6 +71,10 @@
             this.tabControl = new System.Windows.Forms.TabControl();
             this.gridTabPage = new System.Windows.Forms.TabPage();
             this.nodesGroupBox = new System.Windows.Forms.GroupBox();
+            this.nodeIsBoundaryLabel = new System.Windows.Forms.Label();
+            this.nodeTemperatureLabel = new System.Windows.Forms.Label();
+            this.nodeYLabel = new System.Windows.Forms.Label();
+            this.nodeXLabel = new System.Windows.Forms.Label();
             this.nodeIdLabel = new System.Windows.Forms.Label();
             this.nodeIdNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.elementGroupBox = new System.Windows.Forms.GroupBox();
@@ -96,10 +99,16 @@
             this.elementIdNumericUpDown = new System.Windows.Forms.NumericUpDown();
             this.generateNewGridFromInitialDataButton = new System.Windows.Forms.Button();
             this.simulationTabPage = new System.Windows.Forms.TabPage();
-            this.nodeXLabel = new System.Windows.Forms.Label();
-            this.nodeYLabel = new System.Windows.Forms.Label();
-            this.nodeTemperatureLabel = new System.Windows.Forms.Label();
-            this.nodeIsBoundaryLabel = new System.Windows.Forms.Label();
+            this.simulationResultsGroupBox = new System.Windows.Forms.GroupBox();
+            this.simulationResultsMaxTempLabel = new System.Windows.Forms.Label();
+            this.simulationResultsMinTempLabel = new System.Windows.Forms.Label();
+            this.simulationResultsTimeLabel = new System.Windows.Forms.Label();
+            this.simulationResultsStepNumericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.simulationResultsStepLabel = new System.Windows.Forms.Label();
+            this.simulationDetailsGroupBox = new System.Windows.Forms.GroupBox();
+            this.simulationDurationLabel = new System.Windows.Forms.Label();
+            this.simulationAmbientTemperatureLabel = new System.Windows.Forms.Label();
+            this.simulationTimeStepLabel = new System.Windows.Forms.Label();
             this.initialDataGroupBox.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.tabControl.SuspendLayout();
@@ -111,6 +120,9 @@
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.elementIdNumericUpDown)).BeginInit();
             this.simulationTabPage.SuspendLayout();
+            this.simulationResultsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.simulationResultsStepNumericUpDown)).BeginInit();
+            this.simulationDetailsGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // initialDataGroupBox
@@ -121,33 +133,33 @@
             this.initialDataGroupBox.Controls.Add(this.loadInitialDataJsonFileButton);
             this.initialDataGroupBox.Controls.Add(this.densityTextBox);
             this.initialDataGroupBox.Controls.Add(this.nodesCountAlongTheHeightTextBox);
-            this.initialDataGroupBox.Controls.Add(this.nodesCountAlongTheHeightLabel);
-            this.initialDataGroupBox.Controls.Add(this.densityLabel);
+            this.initialDataGroupBox.Controls.Add(this.initialDataNodesCountAlongTheHeightLabel);
+            this.initialDataGroupBox.Controls.Add(this.initialDataDensityLabel);
             this.initialDataGroupBox.Controls.Add(this.nodesCountAlongTheLengthTextBox);
-            this.initialDataGroupBox.Controls.Add(this.nodesCountAlongTheLengthLabel);
+            this.initialDataGroupBox.Controls.Add(this.initialDataNodesCountAlongTheLengthLabel);
             this.initialDataGroupBox.Controls.Add(this.conductivityTextBox);
             this.initialDataGroupBox.Controls.Add(this.gridHeightTextBox);
-            this.initialDataGroupBox.Controls.Add(this.gridHeightLabel);
-            this.initialDataGroupBox.Controls.Add(this.conductivityLabel);
+            this.initialDataGroupBox.Controls.Add(this.initialDataGridHeightLabel);
+            this.initialDataGroupBox.Controls.Add(this.initialDataConductivityLabel);
             this.initialDataGroupBox.Controls.Add(this.gridLengthTextBox);
-            this.initialDataGroupBox.Controls.Add(this.gridLengthLabel);
+            this.initialDataGroupBox.Controls.Add(this.initialDataGridLengthLabel);
             this.initialDataGroupBox.Controls.Add(this.specificHeatTextBox);
-            this.initialDataGroupBox.Controls.Add(this.specificHeatLabel);
+            this.initialDataGroupBox.Controls.Add(this.initialDataSpecificHeatLabel);
             this.initialDataGroupBox.Controls.Add(this.alphaTextBox);
-            this.initialDataGroupBox.Controls.Add(this.alphaLabel);
+            this.initialDataGroupBox.Controls.Add(this.initialDataConvectionCoefficientLabel);
             this.initialDataGroupBox.Controls.Add(this.ambientTemperatureTextBox);
-            this.initialDataGroupBox.Controls.Add(this.ambientTemperatureLabel);
+            this.initialDataGroupBox.Controls.Add(this.initialDataAmbientTemperatureLabel);
             this.initialDataGroupBox.Controls.Add(this.simulationTimeStepTextBox);
-            this.initialDataGroupBox.Controls.Add(this.simulationTimeStepLabel);
+            this.initialDataGroupBox.Controls.Add(this.initialDataSimulationTimeStepLabel);
             this.initialDataGroupBox.Controls.Add(this.simulationTimeTextBox);
-            this.initialDataGroupBox.Controls.Add(this.simulationTimeLabel);
+            this.initialDataGroupBox.Controls.Add(this.initialDataSimulationTimeLabel);
             this.initialDataGroupBox.Controls.Add(this.initialTemperatureTextBox);
-            this.initialDataGroupBox.Controls.Add(this.initialTemperatureLabel);
+            this.initialDataGroupBox.Controls.Add(this.initialDataInitialTemperatureLabel);
             this.initialDataGroupBox.Location = new System.Drawing.Point(12, 12);
-            this.initialDataGroupBox.MaximumSize = new System.Drawing.Size(279, 383);
-            this.initialDataGroupBox.MinimumSize = new System.Drawing.Size(279, 383);
+            this.initialDataGroupBox.MaximumSize = new System.Drawing.Size(279, 459);
+            this.initialDataGroupBox.MinimumSize = new System.Drawing.Size(279, 459);
             this.initialDataGroupBox.Name = "initialDataGroupBox";
-            this.initialDataGroupBox.Size = new System.Drawing.Size(279, 383);
+            this.initialDataGroupBox.Size = new System.Drawing.Size(279, 459);
             this.initialDataGroupBox.TabIndex = 0;
             this.initialDataGroupBox.TabStop = false;
             this.initialDataGroupBox.Text = "Initial data";
@@ -156,22 +168,22 @@
             // 
             this.saveInitialDataToJsonFileButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.saveInitialDataToJsonFileButton.Enabled = false;
-            this.saveInitialDataToJsonFileButton.Location = new System.Drawing.Point(13, 354);
+            this.saveInitialDataToJsonFileButton.Location = new System.Drawing.Point(143, 430);
             this.saveInitialDataToJsonFileButton.Name = "saveInitialDataToJsonFileButton";
-            this.saveInitialDataToJsonFileButton.Size = new System.Drawing.Size(252, 23);
+            this.saveInitialDataToJsonFileButton.Size = new System.Drawing.Size(130, 23);
             this.saveInitialDataToJsonFileButton.TabIndex = 13;
-            this.saveInitialDataToJsonFileButton.Text = "Save initial data to JSON file";
+            this.saveInitialDataToJsonFileButton.Text = "Save to JSON";
             this.saveInitialDataToJsonFileButton.UseVisualStyleBackColor = true;
             this.saveInitialDataToJsonFileButton.Click += new System.EventHandler(this.SaveInitialDataToJsonFileButton_Click);
             // 
             // loadInitialDataJsonFileButton
             // 
             this.loadInitialDataJsonFileButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.loadInitialDataJsonFileButton.Location = new System.Drawing.Point(13, 325);
+            this.loadInitialDataJsonFileButton.Location = new System.Drawing.Point(6, 430);
             this.loadInitialDataJsonFileButton.Name = "loadInitialDataJsonFileButton";
-            this.loadInitialDataJsonFileButton.Size = new System.Drawing.Size(252, 23);
+            this.loadInitialDataJsonFileButton.Size = new System.Drawing.Size(130, 23);
             this.loadInitialDataJsonFileButton.TabIndex = 0;
-            this.loadInitialDataJsonFileButton.Text = "Load JSON file with initial data";
+            this.loadInitialDataJsonFileButton.Text = "Load JSON";
             this.loadInitialDataJsonFileButton.UseVisualStyleBackColor = true;
             this.loadInitialDataJsonFileButton.Click += new System.EventHandler(this.LoadInitialDataFileButton_Click);
             // 
@@ -195,23 +207,23 @@
             this.nodesCountAlongTheHeightTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NodesCountAlongTheHeightTextBox_KeyPress);
             this.nodesCountAlongTheHeightTextBox.Leave += new System.EventHandler(this.NodesCountAlongTheHeightTextBox_Leave);
             // 
-            // nodesCountAlongTheHeightLabel
+            // initialDataNodesCountAlongTheHeightLabel
             // 
-            this.nodesCountAlongTheHeightLabel.AutoSize = true;
-            this.nodesCountAlongTheHeightLabel.Location = new System.Drawing.Point(6, 94);
-            this.nodesCountAlongTheHeightLabel.Name = "nodesCountAlongTheHeightLabel";
-            this.nodesCountAlongTheHeightLabel.Size = new System.Drawing.Size(147, 13);
-            this.nodesCountAlongTheHeightLabel.TabIndex = 16;
-            this.nodesCountAlongTheHeightLabel.Text = "Nodes count along the height";
+            this.initialDataNodesCountAlongTheHeightLabel.AutoSize = true;
+            this.initialDataNodesCountAlongTheHeightLabel.Location = new System.Drawing.Point(6, 94);
+            this.initialDataNodesCountAlongTheHeightLabel.Name = "initialDataNodesCountAlongTheHeightLabel";
+            this.initialDataNodesCountAlongTheHeightLabel.Size = new System.Drawing.Size(147, 13);
+            this.initialDataNodesCountAlongTheHeightLabel.TabIndex = 16;
+            this.initialDataNodesCountAlongTheHeightLabel.Text = "Nodes count along the height";
             // 
-            // densityLabel
+            // initialDataDensityLabel
             // 
-            this.densityLabel.AutoSize = true;
-            this.densityLabel.Location = new System.Drawing.Point(6, 276);
-            this.densityLabel.Name = "densityLabel";
-            this.densityLabel.Size = new System.Drawing.Size(79, 13);
-            this.densityLabel.TabIndex = 24;
-            this.densityLabel.Text = "Density [kg/m³]";
+            this.initialDataDensityLabel.AutoSize = true;
+            this.initialDataDensityLabel.Location = new System.Drawing.Point(6, 276);
+            this.initialDataDensityLabel.Name = "initialDataDensityLabel";
+            this.initialDataDensityLabel.Size = new System.Drawing.Size(79, 13);
+            this.initialDataDensityLabel.TabIndex = 24;
+            this.initialDataDensityLabel.Text = "Density [kg/m³]";
             // 
             // nodesCountAlongTheLengthTextBox
             // 
@@ -223,14 +235,14 @@
             this.nodesCountAlongTheLengthTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NodesCountAlongTheLengthTextBox_KeyPress);
             this.nodesCountAlongTheLengthTextBox.Leave += new System.EventHandler(this.NodesCountAlongTheLengthTextBox_Leave);
             // 
-            // nodesCountAlongTheLengthLabel
+            // initialDataNodesCountAlongTheLengthLabel
             // 
-            this.nodesCountAlongTheLengthLabel.AutoSize = true;
-            this.nodesCountAlongTheLengthLabel.Location = new System.Drawing.Point(6, 68);
-            this.nodesCountAlongTheLengthLabel.Name = "nodesCountAlongTheLengthLabel";
-            this.nodesCountAlongTheLengthLabel.Size = new System.Drawing.Size(147, 13);
-            this.nodesCountAlongTheLengthLabel.TabIndex = 15;
-            this.nodesCountAlongTheLengthLabel.Text = "Nodes count along the length";
+            this.initialDataNodesCountAlongTheLengthLabel.AutoSize = true;
+            this.initialDataNodesCountAlongTheLengthLabel.Location = new System.Drawing.Point(6, 68);
+            this.initialDataNodesCountAlongTheLengthLabel.Name = "initialDataNodesCountAlongTheLengthLabel";
+            this.initialDataNodesCountAlongTheLengthLabel.Size = new System.Drawing.Size(147, 13);
+            this.initialDataNodesCountAlongTheLengthLabel.TabIndex = 15;
+            this.initialDataNodesCountAlongTheLengthLabel.Text = "Nodes count along the length";
             // 
             // conductivityTextBox
             // 
@@ -252,23 +264,23 @@
             this.gridHeightTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.GridHeightTextBox_KeyPress);
             this.gridHeightTextBox.Leave += new System.EventHandler(this.GridHeightTextBox_Leave);
             // 
-            // gridHeightLabel
+            // initialDataGridHeightLabel
             // 
-            this.gridHeightLabel.AutoSize = true;
-            this.gridHeightLabel.Location = new System.Drawing.Point(6, 42);
-            this.gridHeightLabel.Name = "gridHeightLabel";
-            this.gridHeightLabel.Size = new System.Drawing.Size(75, 13);
-            this.gridHeightLabel.TabIndex = 14;
-            this.gridHeightLabel.Text = "Grid height [m]";
+            this.initialDataGridHeightLabel.AutoSize = true;
+            this.initialDataGridHeightLabel.Location = new System.Drawing.Point(6, 42);
+            this.initialDataGridHeightLabel.Name = "initialDataGridHeightLabel";
+            this.initialDataGridHeightLabel.Size = new System.Drawing.Size(75, 13);
+            this.initialDataGridHeightLabel.TabIndex = 14;
+            this.initialDataGridHeightLabel.Text = "Grid height [m]";
             // 
-            // conductivityLabel
+            // initialDataConductivityLabel
             // 
-            this.conductivityLabel.AutoSize = true;
-            this.conductivityLabel.Location = new System.Drawing.Point(6, 250);
-            this.conductivityLabel.Name = "conductivityLabel";
-            this.conductivityLabel.Size = new System.Drawing.Size(115, 13);
-            this.conductivityLabel.TabIndex = 23;
-            this.conductivityLabel.Text = "Conductivity [W/(m°C)]";
+            this.initialDataConductivityLabel.AutoSize = true;
+            this.initialDataConductivityLabel.Location = new System.Drawing.Point(6, 250);
+            this.initialDataConductivityLabel.Name = "initialDataConductivityLabel";
+            this.initialDataConductivityLabel.Size = new System.Drawing.Size(115, 13);
+            this.initialDataConductivityLabel.TabIndex = 23;
+            this.initialDataConductivityLabel.Text = "Conductivity [W/(m°C)]";
             // 
             // gridLengthTextBox
             // 
@@ -280,14 +292,14 @@
             this.gridLengthTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.GridLengthTextBox_KeyPress);
             this.gridLengthTextBox.Leave += new System.EventHandler(this.GridLengthTextBox_Leave);
             // 
-            // gridLengthLabel
+            // initialDataGridLengthLabel
             // 
-            this.gridLengthLabel.AutoSize = true;
-            this.gridLengthLabel.Location = new System.Drawing.Point(6, 16);
-            this.gridLengthLabel.Name = "gridLengthLabel";
-            this.gridLengthLabel.Size = new System.Drawing.Size(75, 13);
-            this.gridLengthLabel.TabIndex = 13;
-            this.gridLengthLabel.Text = "Grid length [m]";
+            this.initialDataGridLengthLabel.AutoSize = true;
+            this.initialDataGridLengthLabel.Location = new System.Drawing.Point(6, 16);
+            this.initialDataGridLengthLabel.Name = "initialDataGridLengthLabel";
+            this.initialDataGridLengthLabel.Size = new System.Drawing.Size(75, 13);
+            this.initialDataGridLengthLabel.TabIndex = 13;
+            this.initialDataGridLengthLabel.Text = "Grid length [m]";
             // 
             // specificHeatTextBox
             // 
@@ -299,14 +311,14 @@
             this.specificHeatTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SpecificHeatTextBox_KeyPress);
             this.specificHeatTextBox.Leave += new System.EventHandler(this.SpecificHeatTextBox_Leave);
             // 
-            // specificHeatLabel
+            // initialDataSpecificHeatLabel
             // 
-            this.specificHeatLabel.AutoSize = true;
-            this.specificHeatLabel.Location = new System.Drawing.Point(6, 224);
-            this.specificHeatLabel.Name = "specificHeatLabel";
-            this.specificHeatLabel.Size = new System.Drawing.Size(117, 13);
-            this.specificHeatLabel.TabIndex = 22;
-            this.specificHeatLabel.Text = "Specific heat [J/(kg°C)]";
+            this.initialDataSpecificHeatLabel.AutoSize = true;
+            this.initialDataSpecificHeatLabel.Location = new System.Drawing.Point(6, 224);
+            this.initialDataSpecificHeatLabel.Name = "initialDataSpecificHeatLabel";
+            this.initialDataSpecificHeatLabel.Size = new System.Drawing.Size(117, 13);
+            this.initialDataSpecificHeatLabel.TabIndex = 22;
+            this.initialDataSpecificHeatLabel.Text = "Specific heat [J/(kg°C)]";
             // 
             // alphaTextBox
             // 
@@ -318,14 +330,14 @@
             this.alphaTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AlphaTextBox_KeyPress);
             this.alphaTextBox.Leave += new System.EventHandler(this.AlphaTextBox_Leave);
             // 
-            // alphaLabel
+            // initialDataConvectionCoefficientLabel
             // 
-            this.alphaLabel.AutoSize = true;
-            this.alphaLabel.Location = new System.Drawing.Point(6, 302);
-            this.alphaLabel.Name = "alphaLabel";
-            this.alphaLabel.Size = new System.Drawing.Size(162, 13);
-            this.alphaLabel.TabIndex = 21;
-            this.alphaLabel.Text = "Convection coefficient [W/(m²K)]";
+            this.initialDataConvectionCoefficientLabel.AutoSize = true;
+            this.initialDataConvectionCoefficientLabel.Location = new System.Drawing.Point(6, 302);
+            this.initialDataConvectionCoefficientLabel.Name = "initialDataConvectionCoefficientLabel";
+            this.initialDataConvectionCoefficientLabel.Size = new System.Drawing.Size(162, 13);
+            this.initialDataConvectionCoefficientLabel.TabIndex = 21;
+            this.initialDataConvectionCoefficientLabel.Text = "Convection coefficient [W/(m²K)]";
             // 
             // ambientTemperatureTextBox
             // 
@@ -337,14 +349,14 @@
             this.ambientTemperatureTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AmbientTemperatureTextBox_KeyPress);
             this.ambientTemperatureTextBox.Leave += new System.EventHandler(this.AmbientTemperatureTextBox_Leave);
             // 
-            // ambientTemperatureLabel
+            // initialDataAmbientTemperatureLabel
             // 
-            this.ambientTemperatureLabel.AutoSize = true;
-            this.ambientTemperatureLabel.Location = new System.Drawing.Point(6, 146);
-            this.ambientTemperatureLabel.Name = "ambientTemperatureLabel";
-            this.ambientTemperatureLabel.Size = new System.Drawing.Size(124, 13);
-            this.ambientTemperatureLabel.TabIndex = 18;
-            this.ambientTemperatureLabel.Text = "Ambient temperature [°C]";
+            this.initialDataAmbientTemperatureLabel.AutoSize = true;
+            this.initialDataAmbientTemperatureLabel.Location = new System.Drawing.Point(6, 146);
+            this.initialDataAmbientTemperatureLabel.Name = "initialDataAmbientTemperatureLabel";
+            this.initialDataAmbientTemperatureLabel.Size = new System.Drawing.Size(124, 13);
+            this.initialDataAmbientTemperatureLabel.TabIndex = 18;
+            this.initialDataAmbientTemperatureLabel.Text = "Ambient temperature [°C]";
             // 
             // simulationTimeStepTextBox
             // 
@@ -356,14 +368,14 @@
             this.simulationTimeStepTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SimulationTimeStepTextBox_KeyPress);
             this.simulationTimeStepTextBox.Leave += new System.EventHandler(this.SimulationTimeStepTextBox_Leave);
             // 
-            // simulationTimeStepLabel
+            // initialDataSimulationTimeStepLabel
             // 
-            this.simulationTimeStepLabel.AutoSize = true;
-            this.simulationTimeStepLabel.Location = new System.Drawing.Point(6, 198);
-            this.simulationTimeStepLabel.Name = "simulationTimeStepLabel";
-            this.simulationTimeStepLabel.Size = new System.Drawing.Size(114, 13);
-            this.simulationTimeStepLabel.TabIndex = 20;
-            this.simulationTimeStepLabel.Text = "Simulation time step [s]";
+            this.initialDataSimulationTimeStepLabel.AutoSize = true;
+            this.initialDataSimulationTimeStepLabel.Location = new System.Drawing.Point(6, 198);
+            this.initialDataSimulationTimeStepLabel.Name = "initialDataSimulationTimeStepLabel";
+            this.initialDataSimulationTimeStepLabel.Size = new System.Drawing.Size(114, 13);
+            this.initialDataSimulationTimeStepLabel.TabIndex = 20;
+            this.initialDataSimulationTimeStepLabel.Text = "Simulation time step [s]";
             // 
             // simulationTimeTextBox
             // 
@@ -375,14 +387,14 @@
             this.simulationTimeTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SimulationTimeTextBox_KeyPress);
             this.simulationTimeTextBox.Leave += new System.EventHandler(this.SimulationTimeTextBox_Leave);
             // 
-            // simulationTimeLabel
+            // initialDataSimulationTimeLabel
             // 
-            this.simulationTimeLabel.AutoSize = true;
-            this.simulationTimeLabel.Location = new System.Drawing.Point(6, 172);
-            this.simulationTimeLabel.Name = "simulationTimeLabel";
-            this.simulationTimeLabel.Size = new System.Drawing.Size(91, 13);
-            this.simulationTimeLabel.TabIndex = 19;
-            this.simulationTimeLabel.Text = "Simulation time [s]";
+            this.initialDataSimulationTimeLabel.AutoSize = true;
+            this.initialDataSimulationTimeLabel.Location = new System.Drawing.Point(6, 172);
+            this.initialDataSimulationTimeLabel.Name = "initialDataSimulationTimeLabel";
+            this.initialDataSimulationTimeLabel.Size = new System.Drawing.Size(91, 13);
+            this.initialDataSimulationTimeLabel.TabIndex = 19;
+            this.initialDataSimulationTimeLabel.Text = "Simulation time [s]";
             // 
             // initialTemperatureTextBox
             // 
@@ -394,34 +406,20 @@
             this.initialTemperatureTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.InitialTemperatureTextBox_KeyPress);
             this.initialTemperatureTextBox.Leave += new System.EventHandler(this.InitialTemperatureTextBox_Leave);
             // 
-            // initialTemperatureLabel
+            // initialDataInitialTemperatureLabel
             // 
-            this.initialTemperatureLabel.AutoSize = true;
-            this.initialTemperatureLabel.Location = new System.Drawing.Point(6, 120);
-            this.initialTemperatureLabel.Name = "initialTemperatureLabel";
-            this.initialTemperatureLabel.Size = new System.Drawing.Size(110, 13);
-            this.initialTemperatureLabel.TabIndex = 17;
-            this.initialTemperatureLabel.Text = "Initial temperature [°C]";
-            // 
-            // richTextBox
-            // 
-            this.richTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.richTextBox.BackColor = System.Drawing.SystemColors.ControlText;
-            this.richTextBox.Font = new System.Drawing.Font("Consolas", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.richTextBox.ForeColor = System.Drawing.SystemColors.Window;
-            this.richTextBox.Location = new System.Drawing.Point(1208, 12);
-            this.richTextBox.Name = "richTextBox";
-            this.richTextBox.ReadOnly = true;
-            this.richTextBox.Size = new System.Drawing.Size(575, 629);
-            this.richTextBox.TabIndex = 2;
-            this.richTextBox.Text = "";
-            this.richTextBox.WordWrap = false;
+            this.initialDataInitialTemperatureLabel.AutoSize = true;
+            this.initialDataInitialTemperatureLabel.Location = new System.Drawing.Point(6, 120);
+            this.initialDataInitialTemperatureLabel.Name = "initialDataInitialTemperatureLabel";
+            this.initialDataInitialTemperatureLabel.Size = new System.Drawing.Size(110, 13);
+            this.initialDataInitialTemperatureLabel.TabIndex = 17;
+            this.initialDataInitialTemperatureLabel.Text = "Initial temperature [°C]";
             // 
             // startSimulationButton
             // 
             this.startSimulationButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.startSimulationButton.Enabled = false;
-            this.startSimulationButton.Location = new System.Drawing.Point(6, 403);
+            this.startSimulationButton.Location = new System.Drawing.Point(3, 404);
             this.startSimulationButton.Name = "startSimulationButton";
             this.startSimulationButton.Size = new System.Drawing.Size(87, 23);
             this.startSimulationButton.TabIndex = 0;
@@ -433,7 +431,7 @@
             // 
             this.saveResultToTextFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.saveResultToTextFileButton.Enabled = false;
-            this.saveResultToTextFileButton.Location = new System.Drawing.Point(171, 618);
+            this.saveResultToTextFileButton.Location = new System.Drawing.Point(189, 404);
             this.saveResultToTextFileButton.Name = "saveResultToTextFileButton";
             this.saveResultToTextFileButton.Size = new System.Drawing.Size(120, 23);
             this.saveResultToTextFileButton.TabIndex = 2;
@@ -456,7 +454,7 @@
             // 
             this.saveGridDetailsToTextFileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.saveGridDetailsToTextFileButton.Enabled = false;
-            this.saveGridDetailsToTextFileButton.Location = new System.Drawing.Point(114, 403);
+            this.saveGridDetailsToTextFileButton.Location = new System.Drawing.Point(114, 404);
             this.saveGridDetailsToTextFileButton.Name = "saveGridDetailsToTextFileButton";
             this.saveGridDetailsToTextFileButton.Size = new System.Drawing.Size(142, 23);
             this.saveGridDetailsToTextFileButton.TabIndex = 1;
@@ -471,9 +469,9 @@
             this.toolStripGridAndSimulationStatusLabel,
             this.toolStripProgressBar,
             this.toolStripProgressLabel});
-            this.statusStrip.Location = new System.Drawing.Point(0, 644);
+            this.statusStrip.Location = new System.Drawing.Point(0, 474);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(1795, 22);
+            this.statusStrip.Size = new System.Drawing.Size(1119, 22);
             this.statusStrip.TabIndex = 6;
             this.statusStrip.Text = "statusStrip";
             // 
@@ -512,7 +510,7 @@
             // 
             this.stopSimulationButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.stopSimulationButton.Enabled = false;
-            this.stopSimulationButton.Location = new System.Drawing.Point(99, 403);
+            this.stopSimulationButton.Location = new System.Drawing.Point(96, 404);
             this.stopSimulationButton.Name = "stopSimulationButton";
             this.stopSimulationButton.Size = new System.Drawing.Size(87, 23);
             this.stopSimulationButton.TabIndex = 7;
@@ -529,7 +527,7 @@
             this.tabControl.Location = new System.Drawing.Point(297, 12);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(905, 458);
+            this.tabControl.Size = new System.Drawing.Size(810, 459);
             this.tabControl.TabIndex = 8;
             // 
             // gridTabPage
@@ -542,24 +540,62 @@
             this.gridTabPage.Location = new System.Drawing.Point(4, 22);
             this.gridTabPage.Name = "gridTabPage";
             this.gridTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.gridTabPage.Size = new System.Drawing.Size(897, 432);
+            this.gridTabPage.Size = new System.Drawing.Size(802, 433);
             this.gridTabPage.TabIndex = 0;
             this.gridTabPage.Text = "Grid";
             // 
             // nodesGroupBox
             // 
+            this.nodesGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.nodesGroupBox.Controls.Add(this.nodeIsBoundaryLabel);
             this.nodesGroupBox.Controls.Add(this.nodeTemperatureLabel);
             this.nodesGroupBox.Controls.Add(this.nodeYLabel);
             this.nodesGroupBox.Controls.Add(this.nodeXLabel);
             this.nodesGroupBox.Controls.Add(this.nodeIdLabel);
             this.nodesGroupBox.Controls.Add(this.nodeIdNumericUpDown);
-            this.nodesGroupBox.Location = new System.Drawing.Point(528, 6);
+            this.nodesGroupBox.Location = new System.Drawing.Point(404, 6);
             this.nodesGroupBox.Name = "nodesGroupBox";
-            this.nodesGroupBox.Size = new System.Drawing.Size(363, 136);
+            this.nodesGroupBox.Size = new System.Drawing.Size(392, 136);
             this.nodesGroupBox.TabIndex = 38;
             this.nodesGroupBox.TabStop = false;
             this.nodesGroupBox.Text = "Node";
+            // 
+            // nodeIsBoundaryLabel
+            // 
+            this.nodeIsBoundaryLabel.AutoSize = true;
+            this.nodeIsBoundaryLabel.Location = new System.Drawing.Point(6, 94);
+            this.nodeIsBoundaryLabel.Name = "nodeIsBoundaryLabel";
+            this.nodeIsBoundaryLabel.Size = new System.Drawing.Size(55, 13);
+            this.nodeIsBoundaryLabel.TabIndex = 6;
+            this.nodeIsBoundaryLabel.Text = "Boundary:";
+            // 
+            // nodeTemperatureLabel
+            // 
+            this.nodeTemperatureLabel.AutoSize = true;
+            this.nodeTemperatureLabel.Location = new System.Drawing.Point(6, 120);
+            this.nodeTemperatureLabel.Name = "nodeTemperatureLabel";
+            this.nodeTemperatureLabel.Size = new System.Drawing.Size(70, 13);
+            this.nodeTemperatureLabel.TabIndex = 5;
+            this.nodeTemperatureLabel.Text = "Temperature:";
+            // 
+            // nodeYLabel
+            // 
+            this.nodeYLabel.AutoSize = true;
+            this.nodeYLabel.Location = new System.Drawing.Point(6, 68);
+            this.nodeYLabel.Name = "nodeYLabel";
+            this.nodeYLabel.Size = new System.Drawing.Size(17, 13);
+            this.nodeYLabel.TabIndex = 4;
+            this.nodeYLabel.Text = "Y:";
+            // 
+            // nodeXLabel
+            // 
+            this.nodeXLabel.AutoSize = true;
+            this.nodeXLabel.Location = new System.Drawing.Point(6, 42);
+            this.nodeXLabel.Name = "nodeXLabel";
+            this.nodeXLabel.Size = new System.Drawing.Size(17, 13);
+            this.nodeXLabel.TabIndex = 3;
+            this.nodeXLabel.Text = "X:";
             // 
             // nodeIdLabel
             // 
@@ -577,10 +613,12 @@
             this.nodeIdNumericUpDown.Name = "nodeIdNumericUpDown";
             this.nodeIdNumericUpDown.Size = new System.Drawing.Size(52, 20);
             this.nodeIdNumericUpDown.TabIndex = 0;
-            this.nodeIdNumericUpDown.ValueChanged += new System.EventHandler(this.nodeIdNumericUpDown_ValueChanged);
+            this.nodeIdNumericUpDown.ValueChanged += new System.EventHandler(this.NodeIdNumericUpDown_ValueChanged);
             // 
             // elementGroupBox
             // 
+            this.elementGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.elementGroupBox.Controls.Add(this.elementMatricesAndVectorDataGridView);
             this.elementGroupBox.Controls.Add(this.elementMatricesAndVectorComboBox);
             this.elementGroupBox.Controls.Add(this.flowLayoutPanel1);
@@ -594,7 +632,7 @@
             this.elementGroupBox.Controls.Add(this.elementIdNumericUpDown);
             this.elementGroupBox.Location = new System.Drawing.Point(6, 6);
             this.elementGroupBox.Name = "elementGroupBox";
-            this.elementGroupBox.Size = new System.Drawing.Size(516, 392);
+            this.elementGroupBox.Size = new System.Drawing.Size(392, 392);
             this.elementGroupBox.TabIndex = 37;
             this.elementGroupBox.TabStop = false;
             this.elementGroupBox.Text = "Element";
@@ -605,6 +643,8 @@
             this.elementMatricesAndVectorDataGridView.AllowUserToDeleteRows = false;
             this.elementMatricesAndVectorDataGridView.AllowUserToResizeColumns = false;
             this.elementMatricesAndVectorDataGridView.AllowUserToResizeRows = false;
+            this.elementMatricesAndVectorDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.elementMatricesAndVectorDataGridView.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
             this.elementMatricesAndVectorDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.elementMatricesAndVectorDataGridView.ColumnHeadersVisible = false;
@@ -613,20 +653,21 @@
             this.Column2,
             this.Column3,
             this.Column4});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.elementMatricesAndVectorDataGridView.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.elementMatricesAndVectorDataGridView.DefaultCellStyle = dataGridViewCellStyle1;
             this.elementMatricesAndVectorDataGridView.Location = new System.Drawing.Point(6, 183);
+            this.elementMatricesAndVectorDataGridView.MinimumSize = new System.Drawing.Size(0, 203);
             this.elementMatricesAndVectorDataGridView.Name = "elementMatricesAndVectorDataGridView";
             this.elementMatricesAndVectorDataGridView.ReadOnly = true;
             this.elementMatricesAndVectorDataGridView.RowHeadersVisible = false;
             this.elementMatricesAndVectorDataGridView.RowTemplate.Height = 50;
-            this.elementMatricesAndVectorDataGridView.Size = new System.Drawing.Size(504, 203);
+            this.elementMatricesAndVectorDataGridView.Size = new System.Drawing.Size(380, 203);
             this.elementMatricesAndVectorDataGridView.TabIndex = 39;
             // 
             // Column1
@@ -663,6 +704,7 @@
             // 
             // elementMatricesAndVectorComboBox
             // 
+            this.elementMatricesAndVectorComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.elementMatricesAndVectorComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.elementMatricesAndVectorComboBox.Enabled = false;
             this.elementMatricesAndVectorComboBox.FormattingEnabled = true;
@@ -686,7 +728,7 @@
             this.flowLayoutPanel1.Controls.Add(this.elementNode3IdLinkLabel);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(53, 42);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(442, 16);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(291, 16);
             this.flowLayoutPanel1.TabIndex = 12;
             // 
             // elementNode0IdLinkLabel
@@ -805,7 +847,7 @@
             // 
             this.generateNewGridFromInitialDataButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.generateNewGridFromInitialDataButton.Enabled = false;
-            this.generateNewGridFromInitialDataButton.Location = new System.Drawing.Point(6, 403);
+            this.generateNewGridFromInitialDataButton.Location = new System.Drawing.Point(6, 404);
             this.generateNewGridFromInitialDataButton.Name = "generateNewGridFromInitialDataButton";
             this.generateNewGridFromInitialDataButton.Size = new System.Drawing.Size(102, 23);
             this.generateNewGridFromInitialDataButton.TabIndex = 0;
@@ -816,62 +858,130 @@
             // simulationTabPage
             // 
             this.simulationTabPage.BackColor = System.Drawing.Color.White;
+            this.simulationTabPage.Controls.Add(this.simulationResultsGroupBox);
+            this.simulationTabPage.Controls.Add(this.simulationDetailsGroupBox);
             this.simulationTabPage.Controls.Add(this.startSimulationButton);
+            this.simulationTabPage.Controls.Add(this.saveResultToTextFileButton);
             this.simulationTabPage.Controls.Add(this.stopSimulationButton);
             this.simulationTabPage.Location = new System.Drawing.Point(4, 22);
             this.simulationTabPage.Name = "simulationTabPage";
             this.simulationTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.simulationTabPage.Size = new System.Drawing.Size(897, 432);
+            this.simulationTabPage.Size = new System.Drawing.Size(802, 433);
             this.simulationTabPage.TabIndex = 1;
             this.simulationTabPage.Text = "Simulation";
             // 
-            // nodeXLabel
+            // simulationResultsGroupBox
             // 
-            this.nodeXLabel.AutoSize = true;
-            this.nodeXLabel.Location = new System.Drawing.Point(6, 42);
-            this.nodeXLabel.Name = "nodeXLabel";
-            this.nodeXLabel.Size = new System.Drawing.Size(17, 13);
-            this.nodeXLabel.TabIndex = 3;
-            this.nodeXLabel.Text = "X:";
+            this.simulationResultsGroupBox.Controls.Add(this.simulationResultsMaxTempLabel);
+            this.simulationResultsGroupBox.Controls.Add(this.simulationResultsMinTempLabel);
+            this.simulationResultsGroupBox.Controls.Add(this.simulationResultsTimeLabel);
+            this.simulationResultsGroupBox.Controls.Add(this.simulationResultsStepNumericUpDown);
+            this.simulationResultsGroupBox.Controls.Add(this.simulationResultsStepLabel);
+            this.simulationResultsGroupBox.Location = new System.Drawing.Point(6, 96);
+            this.simulationResultsGroupBox.Name = "simulationResultsGroupBox";
+            this.simulationResultsGroupBox.Size = new System.Drawing.Size(303, 302);
+            this.simulationResultsGroupBox.TabIndex = 13;
+            this.simulationResultsGroupBox.TabStop = false;
+            this.simulationResultsGroupBox.Text = "Results";
             // 
-            // nodeYLabel
+            // simulationResultsMaxTempLabel
             // 
-            this.nodeYLabel.AutoSize = true;
-            this.nodeYLabel.Location = new System.Drawing.Point(6, 68);
-            this.nodeYLabel.Name = "nodeYLabel";
-            this.nodeYLabel.Size = new System.Drawing.Size(17, 13);
-            this.nodeYLabel.TabIndex = 4;
-            this.nodeYLabel.Text = "Y:";
+            this.simulationResultsMaxTempLabel.AutoSize = true;
+            this.simulationResultsMaxTempLabel.Location = new System.Drawing.Point(6, 94);
+            this.simulationResultsMaxTempLabel.Name = "simulationResultsMaxTempLabel";
+            this.simulationResultsMaxTempLabel.Size = new System.Drawing.Size(113, 13);
+            this.simulationResultsMaxTempLabel.TabIndex = 4;
+            this.simulationResultsMaxTempLabel.Text = "Maximum temperature:";
             // 
-            // nodeTemperatureLabel
+            // simulationResultsMinTempLabel
             // 
-            this.nodeTemperatureLabel.AutoSize = true;
-            this.nodeTemperatureLabel.Location = new System.Drawing.Point(6, 120);
-            this.nodeTemperatureLabel.Name = "nodeTemperatureLabel";
-            this.nodeTemperatureLabel.Size = new System.Drawing.Size(70, 13);
-            this.nodeTemperatureLabel.TabIndex = 5;
-            this.nodeTemperatureLabel.Text = "Temperature:";
+            this.simulationResultsMinTempLabel.AutoSize = true;
+            this.simulationResultsMinTempLabel.Location = new System.Drawing.Point(6, 68);
+            this.simulationResultsMinTempLabel.Name = "simulationResultsMinTempLabel";
+            this.simulationResultsMinTempLabel.Size = new System.Drawing.Size(110, 13);
+            this.simulationResultsMinTempLabel.TabIndex = 3;
+            this.simulationResultsMinTempLabel.Text = "Minimum temperature:";
             // 
-            // nodeIsBoundaryLabel
+            // simulationResultsTimeLabel
             // 
-            this.nodeIsBoundaryLabel.AutoSize = true;
-            this.nodeIsBoundaryLabel.Location = new System.Drawing.Point(6, 94);
-            this.nodeIsBoundaryLabel.Name = "nodeIsBoundaryLabel";
-            this.nodeIsBoundaryLabel.Size = new System.Drawing.Size(55, 13);
-            this.nodeIsBoundaryLabel.TabIndex = 6;
-            this.nodeIsBoundaryLabel.Text = "Boundary:";
+            this.simulationResultsTimeLabel.AutoSize = true;
+            this.simulationResultsTimeLabel.Location = new System.Drawing.Point(6, 42);
+            this.simulationResultsTimeLabel.Name = "simulationResultsTimeLabel";
+            this.simulationResultsTimeLabel.Size = new System.Drawing.Size(33, 13);
+            this.simulationResultsTimeLabel.TabIndex = 2;
+            this.simulationResultsTimeLabel.Text = "Time:";
+            // 
+            // simulationResultsStepNumericUpDown
+            // 
+            this.simulationResultsStepNumericUpDown.Enabled = false;
+            this.simulationResultsStepNumericUpDown.Location = new System.Drawing.Point(44, 14);
+            this.simulationResultsStepNumericUpDown.Maximum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.simulationResultsStepNumericUpDown.Name = "simulationResultsStepNumericUpDown";
+            this.simulationResultsStepNumericUpDown.Size = new System.Drawing.Size(96, 20);
+            this.simulationResultsStepNumericUpDown.TabIndex = 1;
+            this.simulationResultsStepNumericUpDown.ValueChanged += new System.EventHandler(this.SimulationResultsStepNumericUpDown_ValueChanged);
+            // 
+            // simulationResultsStepLabel
+            // 
+            this.simulationResultsStepLabel.AutoSize = true;
+            this.simulationResultsStepLabel.Location = new System.Drawing.Point(6, 16);
+            this.simulationResultsStepLabel.Name = "simulationResultsStepLabel";
+            this.simulationResultsStepLabel.Size = new System.Drawing.Size(32, 13);
+            this.simulationResultsStepLabel.TabIndex = 0;
+            this.simulationResultsStepLabel.Text = "Step:";
+            // 
+            // simulationDetailsGroupBox
+            // 
+            this.simulationDetailsGroupBox.Controls.Add(this.simulationDurationLabel);
+            this.simulationDetailsGroupBox.Controls.Add(this.simulationAmbientTemperatureLabel);
+            this.simulationDetailsGroupBox.Controls.Add(this.simulationTimeStepLabel);
+            this.simulationDetailsGroupBox.Location = new System.Drawing.Point(6, 6);
+            this.simulationDetailsGroupBox.Name = "simulationDetailsGroupBox";
+            this.simulationDetailsGroupBox.Size = new System.Drawing.Size(303, 84);
+            this.simulationDetailsGroupBox.TabIndex = 12;
+            this.simulationDetailsGroupBox.TabStop = false;
+            this.simulationDetailsGroupBox.Text = "Details";
+            // 
+            // simulationDurationLabel
+            // 
+            this.simulationDurationLabel.AutoSize = true;
+            this.simulationDurationLabel.Location = new System.Drawing.Point(6, 16);
+            this.simulationDurationLabel.Name = "simulationDurationLabel";
+            this.simulationDurationLabel.Size = new System.Drawing.Size(50, 13);
+            this.simulationDurationLabel.TabIndex = 8;
+            this.simulationDurationLabel.Text = "Duration:";
+            // 
+            // simulationAmbientTemperatureLabel
+            // 
+            this.simulationAmbientTemperatureLabel.AutoSize = true;
+            this.simulationAmbientTemperatureLabel.Location = new System.Drawing.Point(6, 68);
+            this.simulationAmbientTemperatureLabel.Name = "simulationAmbientTemperatureLabel";
+            this.simulationAmbientTemperatureLabel.Size = new System.Drawing.Size(107, 13);
+            this.simulationAmbientTemperatureLabel.TabIndex = 11;
+            this.simulationAmbientTemperatureLabel.Text = "Ambient temperature:";
+            // 
+            // simulationTimeStepLabel
+            // 
+            this.simulationTimeStepLabel.AutoSize = true;
+            this.simulationTimeStepLabel.Location = new System.Drawing.Point(6, 42);
+            this.simulationTimeStepLabel.Name = "simulationTimeStepLabel";
+            this.simulationTimeStepLabel.Size = new System.Drawing.Size(56, 13);
+            this.simulationTimeStepLabel.TabIndex = 9;
+            this.simulationTimeStepLabel.Text = "Time step:";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1795, 666);
+            this.ClientSize = new System.Drawing.Size(1119, 496);
             this.Controls.Add(this.tabControl);
-            this.Controls.Add(this.richTextBox);
             this.Controls.Add(this.statusStrip);
-            this.Controls.Add(this.saveResultToTextFileButton);
             this.Controls.Add(this.initialDataGroupBox);
-            this.MinimumSize = new System.Drawing.Size(900, 517);
+            this.MinimumSize = new System.Drawing.Size(1135, 535);
             this.Name = "MainForm";
             this.Text = "FEM - Temperature distribution 2D";
             this.initialDataGroupBox.ResumeLayout(false);
@@ -890,6 +1000,11 @@
             this.flowLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.elementIdNumericUpDown)).EndInit();
             this.simulationTabPage.ResumeLayout(false);
+            this.simulationResultsGroupBox.ResumeLayout(false);
+            this.simulationResultsGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.simulationResultsStepNumericUpDown)).EndInit();
+            this.simulationDetailsGroupBox.ResumeLayout(false);
+            this.simulationDetailsGroupBox.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -899,31 +1014,30 @@
 
         private System.Windows.Forms.GroupBox initialDataGroupBox;
         private System.Windows.Forms.TextBox gridLengthTextBox;
-        private System.Windows.Forms.Label gridLengthLabel;
+        private System.Windows.Forms.Label initialDataGridLengthLabel;
         private System.Windows.Forms.TextBox alphaTextBox;
-        private System.Windows.Forms.Label alphaLabel;
+        private System.Windows.Forms.Label initialDataConvectionCoefficientLabel;
         private System.Windows.Forms.TextBox ambientTemperatureTextBox;
-        private System.Windows.Forms.Label ambientTemperatureLabel;
+        private System.Windows.Forms.Label initialDataAmbientTemperatureLabel;
         private System.Windows.Forms.TextBox simulationTimeStepTextBox;
-        private System.Windows.Forms.Label simulationTimeStepLabel;
+        private System.Windows.Forms.Label initialDataSimulationTimeStepLabel;
         private System.Windows.Forms.TextBox simulationTimeTextBox;
-        private System.Windows.Forms.Label simulationTimeLabel;
+        private System.Windows.Forms.Label initialDataSimulationTimeLabel;
         private System.Windows.Forms.TextBox initialTemperatureTextBox;
-        private System.Windows.Forms.Label initialTemperatureLabel;
+        private System.Windows.Forms.Label initialDataInitialTemperatureLabel;
         private System.Windows.Forms.TextBox gridHeightTextBox;
-        private System.Windows.Forms.Label gridHeightLabel;
+        private System.Windows.Forms.Label initialDataGridHeightLabel;
         private System.Windows.Forms.TextBox nodesCountAlongTheHeightTextBox;
-        private System.Windows.Forms.Label nodesCountAlongTheHeightLabel;
+        private System.Windows.Forms.Label initialDataNodesCountAlongTheHeightLabel;
         private System.Windows.Forms.TextBox nodesCountAlongTheLengthTextBox;
-        private System.Windows.Forms.Label nodesCountAlongTheLengthLabel;
+        private System.Windows.Forms.Label initialDataNodesCountAlongTheLengthLabel;
         private System.Windows.Forms.TextBox densityTextBox;
-        private System.Windows.Forms.Label densityLabel;
+        private System.Windows.Forms.Label initialDataDensityLabel;
         private System.Windows.Forms.TextBox conductivityTextBox;
-        private System.Windows.Forms.Label conductivityLabel;
+        private System.Windows.Forms.Label initialDataConductivityLabel;
         private System.Windows.Forms.TextBox specificHeatTextBox;
-        private System.Windows.Forms.Label specificHeatLabel;
+        private System.Windows.Forms.Label initialDataSpecificHeatLabel;
         private System.Windows.Forms.Button loadInitialDataJsonFileButton;
-        private System.Windows.Forms.RichTextBox richTextBox;
         private System.Windows.Forms.Button startSimulationButton;
         private System.Windows.Forms.Button saveResultToTextFileButton;
         private System.Windows.Forms.OpenFileDialog openJsonFileDialog;
@@ -968,5 +1082,15 @@
         private System.Windows.Forms.Label nodeTemperatureLabel;
         private System.Windows.Forms.Label nodeYLabel;
         private System.Windows.Forms.Label nodeXLabel;
+        private System.Windows.Forms.Label simulationTimeStepLabel;
+        private System.Windows.Forms.Label simulationDurationLabel;
+        private System.Windows.Forms.GroupBox simulationResultsGroupBox;
+        private System.Windows.Forms.NumericUpDown simulationResultsStepNumericUpDown;
+        private System.Windows.Forms.Label simulationResultsStepLabel;
+        private System.Windows.Forms.GroupBox simulationDetailsGroupBox;
+        private System.Windows.Forms.Label simulationAmbientTemperatureLabel;
+        private System.Windows.Forms.Label simulationResultsMinTempLabel;
+        private System.Windows.Forms.Label simulationResultsTimeLabel;
+        private System.Windows.Forms.Label simulationResultsMaxTempLabel;
     }
 }

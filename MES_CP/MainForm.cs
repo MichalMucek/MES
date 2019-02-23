@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -23,17 +24,15 @@ namespace MES_CP
             }
         }
 
-        public void UpdateTimeTemperatureOnRichTextBox(double time, double minTemp, double maxTemp)
-        {
-            richTextBox.Text = $">>INITIAL DATA<<\n{initialData.ToString()}\n\n" +
-                               $"Time: {time} s\n" +
-                               $"Min. temperature: {minTemp}°C\n" +
-                               $"Max. temperature: {maxTemp}°C";
-        }
-
         public void UpdateGridAndSimulationStatusLabel(string status)
         {
             toolStripGridAndSimulationStatusLabel.Text = status;
+        }
+
+        public void UpdateSimulationResults()
+        {
+            simulationResultsStepNumericUpDown.Maximum++;
+            simulationResultsStepNumericUpDown.Value = simulationResultsStepNumericUpDown.Maximum;
         }
 
         private void SetInitialData()
@@ -120,55 +119,62 @@ namespace MES_CP
 
         private void GenerateNewGridFromInitialDataButton_Click(object sender, EventArgs e)
         {
-            SetInitialData();
+            ThreadPool.QueueUserWorkItem(Async_GenerateNewGrid, null);
+        }
+
+        private void Async_GenerateNewGrid(object state)
+        {
+            Invoke((MethodInvoker) delegate
+            {
+                SetInitialData();
+
+                SimulationProgressBarValue = 0;
+                toolStripProgressBar.Visible = true;
+                toolStripGridAndSimulationStatusLabel.Visible = true;
+                toolStripProgressLabel.Visible = true;
+            });
+
+            grid = new Grid(initialData);
 
             Invoke((MethodInvoker) delegate
             {
-                toolStripGridAndSimulationStatusLabel.Text = "Creating new grid...";
-                grid = new Grid(initialData);
+                toolStripGridAndSimulationStatusLabel.Text = "Grid is ready for simulation :)";
+
+                simulationDurationLabel.Text =
+                    $"Duration: {SecondsToYearsMonthsWeeksDaysHoursMinutesSecondsString(grid.InitialData.SimulationTime)}";
+                simulationTimeStepLabel.Text = $"Time step: {grid.InitialData.SimulationTimeStep} s";
+                simulationAmbientTemperatureLabel.Text =
+                    $"Ambient temperature: {grid.InitialData.AmbientTemperature}°C";
+
+                saveGridDetailsToTextFileButton.Enabled = true;
+                startSimulationButton.Enabled = true;
+
+                elementIdNumericUpDown.Enabled = true;
+                elementIdNumericUpDown.Minimum = 1;
+                elementIdNumericUpDown.Maximum = grid.ElementsCount;
+
+                elementNode0IdLinkLabel.Enabled = true;
+                elementNode1IdLinkLabel.Enabled = true;
+                elementNode2IdLinkLabel.Enabled = true;
+                elementNode3IdLinkLabel.Enabled = true;
+
+                elementMatricesAndVectorComboBox.Enabled = true;
+                elementMatricesAndVectorDataGridView.Rows.Add(4);
+                elementMatricesAndVectorComboBox.SelectedIndex = 0;
+
+                nodeIdNumericUpDown.Enabled = true;
+                nodeIdNumericUpDown.Minimum = 1;
+                nodeIdNumericUpDown.Maximum = grid.NodesCount;
+                nodeIdNumericUpDown.Value = grid.Elements[0].Nodes[0].Id;
+
+                // For GUI update purpose
+                elementIdNumericUpDown.Value = elementIdNumericUpDown.Maximum;
+                elementIdNumericUpDown.Value = 1;
             });
-
-            saveGridDetailsToTextFileButton.Enabled = true;
-
-            elementIdNumericUpDown.Enabled = true;
-            elementIdNumericUpDown.Minimum = 1;
-            elementIdNumericUpDown.Maximum = grid.ElementsCount;
-
-            elementNode0IdLinkLabel.Enabled = true;
-            elementNode1IdLinkLabel.Enabled = true;
-            elementNode2IdLinkLabel.Enabled = true;
-            elementNode3IdLinkLabel.Enabled = true;
-
-            elementMatricesAndVectorComboBox.Enabled = true;
-            elementMatricesAndVectorDataGridView.Rows.Add(4);
-            elementMatricesAndVectorComboBox.SelectedIndex = 0;
-
-            nodeIdNumericUpDown.Enabled = true;
-            nodeIdNumericUpDown.Minimum = 1;
-            nodeIdNumericUpDown.Maximum = grid.NodesCount;
-            nodeIdNumericUpDown.Value = grid.Elements[0].Nodes[0].Id;
-
-            // For GUI update purpose
-            elementIdNumericUpDown.Value = elementIdNumericUpDown.Maximum;
-            elementIdNumericUpDown.Value = 1;
         }
 
         private void StartSimulationButton_Click(object sender, EventArgs e)
         {
-            startSimulationButton.Enabled = false;
-            stopSimulationButton.Enabled = true;
-            saveResultToTextFileButton.Enabled = false;
-            saveGridDetailsToTextFileButton.Enabled = false;
-            toolStripProgressLabel.Text = "0%";
-            toolStripProgressBar.Value = 0;
-            toolStripProgressBar.Visible = true;
-            toolStripGridAndSimulationStatusLabel.Visible = true;
-            toolStripProgressLabel.Visible = true;
-
-            SetInitialData();
-
-            richTextBox.Text = $">>INITIAL DATA<<\n{initialData.ToString()}\n";
-
             cancellationTokenSource = new CancellationTokenSource();
 
             ThreadPool.QueueUserWorkItem(Async_LongRunningTask_StartSimulation, cancellationTokenSource.Token);
@@ -178,57 +184,62 @@ namespace MES_CP
         {
             Invoke((MethodInvoker) delegate
             {
-                toolStripGridAndSimulationStatusLabel.Text = "Creating new grid...";
-                grid = new Grid(initialData);
-            });
-
-            Invoke((MethodInvoker) delegate
-            {
-                saveGridDetailsToTextFileButton.Enabled = true;
+                generateNewGridFromInitialDataButton.Enabled = false;
+                startSimulationButton.Enabled = false;
+                stopSimulationButton.Enabled = true;
+                saveResultToTextFileButton.Enabled = false;
+                simulationResultsStepNumericUpDown.Enabled = false;
+                simulationResultsStepNumericUpDown.Value = 0;
+                simulationResultsStepNumericUpDown.Maximum = 0;
                 SimulationProgressBarValue = 0;
-                richTextBox.Select();
+                toolStripGridAndSimulationStatusLabel.Visible = true;
+                toolStripProgressBar.Visible = true;
+                toolStripProgressLabel.Visible = true;
                 isSimulationRunning = true;
             });
 
-            //grid.RunSimulation();
-            grid.RunSimulationWithCancellationToken((CancellationToken) state);
+            bool isSimulationCompletedWithoutCancellation = grid.RunSimulationWithCancellationToken((CancellationToken) state);
 
             Invoke((MethodInvoker) delegate
             {
                 isSimulationRunning = false;
-                toolStripGridAndSimulationStatusLabel.Text = "Simulation is completed :)";
-                richTextBox.Text = grid.TimeTemperatureToString();
+                stopSimulationButton.Enabled = false;
+                startSimulationButton.Enabled = true;
+                generateNewGridFromInitialDataButton.Enabled = true;
+
+                toolStripGridAndSimulationStatusLabel.Text = 
+                    isSimulationCompletedWithoutCancellation ? "Simulation is completed :)" : "Simulation has been canceled :(";
+
+                simulationResultsStepNumericUpDown.Enabled = true;
                 saveResultToTextFileButton.Enabled = true;
                 toolStripProgressBar.Visible = false;
                 toolStripProgressLabel.Visible = false;
-
-                if (IsEveryInitialDataTextBoxFilled()) EnableGenerateGridAndSaveToJsonButtons();
-                else DisableGenerateGridnAndSaveToJsonButtons();
             });
         }
 
         private void StopSimulationButton_Click(object sender, EventArgs e)
         {
             cancellationTokenSource.Cancel();
+            stopSimulationButton.Enabled = false;
 
             toolStripGridAndSimulationStatusLabel.Text = "Simulation is about to stop...";
         }
 
         private void SaveResultToTextFileButton_Click(object sender, EventArgs e)
         {
-            saveTextFileDialog.FileName = $"simulation-result-{DateTime.Now.ToString("yyyyMMddHHmmss")}";
+            saveTextFileDialog.FileName = $"simulation-result-{DateTime.Now:yyyyMMddHHmmss}";
 
             if (saveTextFileDialog.ShowDialog() == DialogResult.OK)
             {
                 toolStripInitialDataStatusLabel.Text = "Saving simulation result to text file...";
-                File.WriteAllText(saveTextFileDialog.FileName, richTextBox.Text);
+                File.WriteAllText(saveTextFileDialog.FileName, grid.TimeTemperatureToString());
                 toolStripInitialDataStatusLabel.Text = "Simulation result has been saved to text file.";
             }
         }
 
         private void SaveGridDetailsToTextFileButton_Click(object sender, EventArgs e)
         {
-            saveTextFileDialog.FileName = $"grid-details-{DateTime.Now.ToString("yyyyMMddHHmmss")}";
+            saveTextFileDialog.FileName = $"grid-details-{DateTime.Now:yyyyMMddHHmmss}";
 
             if (saveTextFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -240,7 +251,7 @@ namespace MES_CP
 
         private void SaveInitialDataToJsonFileButton_Click(object sender, EventArgs e)
         {
-            saveJsonFileDialog.FileName = $"initial-data-{DateTime.Now.ToString("yyyyMMddHHmmss")}";
+            saveJsonFileDialog.FileName = $"initial-data-{DateTime.Now:yyyyMMddHHmmss}";
 
             if (saveJsonFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -255,8 +266,6 @@ namespace MES_CP
         {
             saveInitialDataToJsonFileButton.Enabled = true;
             generateNewGridFromInitialDataButton.Enabled = true;
-
-            if (!isSimulationRunning) startSimulationButton.Enabled = true;
         }
 
         private void DisableGenerateGridnAndSaveToJsonButtons()
@@ -504,14 +513,91 @@ namespace MES_CP
             }
         }
 
-        private void nodeIdNumericUpDown_ValueChanged(object sender, EventArgs e)
+        private void NodeIdNumericUpDown_ValueChanged(object sender, EventArgs e)
         {
             Node selectedNode = grid.Nodes[(int) nodeIdNumericUpDown.Value - 1];
 
             nodeXLabel.Text = $"X: {selectedNode.X}";
             nodeYLabel.Text = $"Y: {selectedNode.Y}";
             nodeIsBoundaryLabel.Text = $"Boundary: {selectedNode.IsBoundary}";
-            nodeTemperatureLabel.Text = $"Temperature: {selectedNode.InitialTemperature}";
+            nodeTemperatureLabel.Text = $"Temperature: {selectedNode.InitialTemperature}°C";
+        }
+
+        private string SecondsToYearsMonthsWeeksDaysHoursMinutesSecondsString(double seconds)
+        {
+            StringBuilder stringBuilder = new StringBuilder("");
+
+            const double secondsInYear = 31556926.0;
+            const double secondsInMonths = 2629743.83;
+            const double secondsInWeek = 604800.0;
+            const double secondsInDay = 86400.0;
+            const double secondsInHour = 3600.0;
+            const double secondsInMinute = 60.0;
+
+            if (seconds >= secondsInYear)
+            {
+                int yearsCount = (int) (seconds / secondsInYear);
+                seconds -= yearsCount * secondsInYear;
+
+                stringBuilder.Append(yearsCount > 1 ? $"{yearsCount} years " : $"{yearsCount} year ");
+            }
+
+            if (seconds >= secondsInMonths)
+            {
+                int monthsCount = (int) (seconds / secondsInMonths);
+                seconds -= monthsCount * secondsInMonths;
+
+                stringBuilder.Append(monthsCount > 1 ? $"{monthsCount} months " : $"{monthsCount} month ");
+            }
+
+            if (seconds >= secondsInWeek)
+            {
+                int weeksCount = (int) (seconds / secondsInWeek);
+                seconds -= weeksCount * secondsInWeek;
+
+                stringBuilder.Append(weeksCount > 1 ? $"{weeksCount} weeks " : $"{weeksCount} week ");
+            }
+
+            if (seconds >= secondsInDay)
+            {
+                int daysCount = (int)(seconds / secondsInDay);
+                seconds -= daysCount * secondsInDay;
+
+                stringBuilder.Append(daysCount > 1 ? $"{daysCount} days " : $"{daysCount} day ");
+            }
+
+            if (seconds >= secondsInHour)
+            {
+                int hoursCount = (int)(seconds / secondsInHour);
+                seconds -= hoursCount * secondsInHour;
+
+                stringBuilder.Append(hoursCount > 1 ? $"{hoursCount} hours " : $"{hoursCount} hour ");
+            }
+
+            if (seconds >= secondsInMinute)
+            {
+                int minutesCount = (int)(seconds / secondsInMinute);
+                seconds -= minutesCount * secondsInMinute;
+
+                stringBuilder.Append(minutesCount > 1 ? $"{minutesCount} minutes " : $"{minutesCount} minute ");
+            }
+
+            if (seconds != 0) stringBuilder.Append(seconds > 1 ? $"{seconds} seconds" : $"{seconds} second");
+
+            return stringBuilder.ToString();
+        }
+
+        private void SimulationResultsStepNumericUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            int selectedSimulationStep = (int) simulationResultsStepNumericUpDown.Value;
+            double timeInSeconds = grid.TimeTemperature[selectedSimulationStep].Key;
+
+            simulationResultsTimeLabel.Text =
+                $"Time: {SecondsToYearsMonthsWeeksDaysHoursMinutesSecondsString(timeInSeconds)}";
+            simulationResultsMinTempLabel.Text =
+                $"Minimum temperature: {grid.TimeTemperature[selectedSimulationStep].Value.Minimum()}°C";
+            simulationResultsMaxTempLabel.Text =
+                $"Maximum temperature: {grid.TimeTemperature[selectedSimulationStep].Value.Maximum()}°C";
         }
     }
 }

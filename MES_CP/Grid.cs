@@ -22,7 +22,7 @@ namespace MES_CP
         public Matrix<double> C { get; private set; }
         public Vector<double> P { get; private set; }
 
-        private List<KeyValuePair<double, Vector<double>>> TimeTemperature = new List<KeyValuePair<double, Vector<double>>>();
+        public List<KeyValuePair<double, Vector<double>>> TimeTemperature { get; private set; } = new List<KeyValuePair<double, Vector<double>>>();
 
         public Grid(string initialDataFilePath) => GenerateFromInitialDataFile(initialDataFilePath);
         public Grid(InitialData initialData) => GenerateFromInitialDataObject(initialData);
@@ -48,6 +48,9 @@ namespace MES_CP
             ElementsCount = (initialData.NodesCountAlongTheHeight - 1) * (initialData.NodesCountAlongTheLength - 1);
             NodesCount = initialData.NodesCountAlongTheHeight * initialData.NodesCountAlongTheLength;
 
+            var t0Vector = Vector<double>.Build.Dense(NodesCount, InitialData.InitialTemperature);
+            TimeTemperature.Add(new KeyValuePair<double, Vector<double>>(0, t0Vector));
+
             AddNodes(x0, y0, dx, dy, nL, nH, t0);
             AddElements(nH);
             GenerateGlobalMatricesAndVectors();
@@ -55,6 +58,11 @@ namespace MES_CP
 
         private void AddNodes(double x0, double y0, double dx, double dy, int nL, int nH, double t0)
         {
+            Program.MainForm.BeginInvoke((MethodInvoker) delegate
+            {
+                Program.MainForm.UpdateGridAndSimulationStatusLabel("Generating new grid... (Adding nodes)");
+            });
+
             for (int i = 0, nodeId = 1; i < nL; i++)
             {
                 for (int j = 0; j < nH; j++, nodeId++)
@@ -74,12 +82,25 @@ namespace MES_CP
                     };
 
                     Nodes.Add(node);
+
+                    // GUI Update
+                    int localNodeId = nodeId;
+                    Program.MainForm.BeginInvoke((MethodInvoker) delegate
+                    {
+                        Program.MainForm.SimulationProgressBarValue = 
+                            (int) (((localNodeId * 100) / NodesCount) * (1.0 / 3.0)); // 0% ... 33%
+                    });
                 }
             }
         }
 
         private void AddElements(int nH)
         {
+            Program.MainForm.BeginInvoke((MethodInvoker) delegate
+            {
+                Program.MainForm.UpdateGridAndSimulationStatusLabel("Generating new grid... (Adding elements)");
+            });
+
             for (int elementId = 1, i = 0; elementId <= ElementsCount; i++)
             {
                 if (Nodes[i].Id % nH != 0)
@@ -94,9 +115,11 @@ namespace MES_CP
                     Elements.Add(new Element(elementNodes, elementId, InitialData));
 
                     // GUI update
-                    Program.MainForm.Invoke((MethodInvoker) delegate
+                    int localElementId = elementId;
+                    Program.MainForm.BeginInvoke((MethodInvoker) delegate
                     {
-                        Program.MainForm.SimulationProgressBarValue = (elementId * 100) / ElementsCount;
+                        Program.MainForm.SimulationProgressBarValue = 
+                            (int) (((localElementId * 100) / ElementsCount) * (1.0 / 3.0)) + 33; // 33% ... 67%
                     });
 
                     elementId++;
@@ -106,6 +129,11 @@ namespace MES_CP
 
         private void GenerateGlobalMatricesAndVectors()
         {
+            Program.MainForm.BeginInvoke((MethodInvoker) delegate
+            {
+                Program.MainForm.UpdateGridAndSimulationStatusLabel("Generating new grid... (Aggregating)");
+            });
+
             H = Matrix<double>.Build.Dense(NodesCount, NodesCount);
             HBoundaryConditions = Matrix<double>.Build.Dense(NodesCount, NodesCount);
             C = Matrix<double>.Build.Dense(NodesCount, NodesCount);
@@ -131,6 +159,13 @@ namespace MES_CP
                     }
 
                     P[element.Nodes[i].Id - 1] += element.P[i];
+
+                    // GUI update
+                    Program.MainForm.BeginInvoke((MethodInvoker) delegate
+                    {
+                        Program.MainForm.SimulationProgressBarValue =
+                            (int) (((element.Id * 100) / ElementsCount) * (1.0 / 3.0)) + 67; //  67% ... 100%
+                    });
                 }
             }
         }
@@ -143,6 +178,12 @@ namespace MES_CP
             var tVector = Vector<double>.Build.Dense(NodesCount);
             var timeStep = InitialData.SimulationTimeStep;
 
+            if (TimeTemperature.Count > 0)
+            {
+                TimeTemperature.Clear();
+                TimeTemperature.Add(new KeyValuePair<double, Vector<double>>(0, t0Vector));
+            }
+
             hHatMatrix = (H + HBoundaryConditions) + (C / timeStep);
 
             // GUI update
@@ -154,7 +195,7 @@ namespace MES_CP
             var hHatMatrixInverse = hHatMatrix.Inverse(); // Time consuming
 
             // GUI update
-            Program.MainForm.BeginInvoke((MethodInvoker)delegate
+            Program.MainForm.BeginInvoke((MethodInvoker) delegate
             {
                 Program.MainForm.UpdateGridAndSimulationStatusLabel("Simulation is running...");
             });
@@ -164,20 +205,17 @@ namespace MES_CP
                 pHatVector = (C / timeStep) * t0Vector + P;
                 tVector = hHatMatrixInverse * pHatVector;
 
-                var time = passedTime;
-                var minTemp = tVector.Min();
-                var maxTemp = tVector.Max();
+                TimeTemperature.Add(new KeyValuePair<double, Vector<double>>(passedTime, tVector));
+
+                t0Vector = tVector;
 
                 // GUI update
                 Program.MainForm.Invoke((MethodInvoker) delegate
                 {
-                    Program.MainForm.SimulationProgressBarValue = (int)((time / InitialData.SimulationTime) * 100);
-                    Program.MainForm.UpdateTimeTemperatureOnRichTextBox(time, minTemp, maxTemp);
+                    Program.MainForm.SimulationProgressBarValue =
+                        (int) ((passedTime / InitialData.SimulationTime) * 100);
+                    Program.MainForm.UpdateSimulationResults();
                 });
-
-                TimeTemperature.Add(new KeyValuePair<double, Vector<double>>(passedTime, tVector));
-
-                t0Vector = tVector;
             }
         }
 
@@ -191,8 +229,20 @@ namespace MES_CP
                 var tVector = Vector<double>.Build.Dense(NodesCount);
                 var timeStep = InitialData.SimulationTimeStep;
 
+                // GUI update
+                Program.MainForm.Invoke((MethodInvoker)delegate
+                {
+                    Program.MainForm.UpdateGridAndSimulationStatusLabel("Simulation is about to start...**");
+                });
+
                 if (!token.IsCancellationRequested)
                 {
+                    if (TimeTemperature.Count > 1)
+                    {
+                        TimeTemperature.Clear();
+                        TimeTemperature.Add(new KeyValuePair<double, Vector<double>>(0, t0Vector));
+                    }
+
                     hHatMatrix = (H + HBoundaryConditions) + (C / timeStep);
 
                     // GUI update
@@ -222,21 +272,17 @@ namespace MES_CP
                         pHatVector = (C / timeStep) * t0Vector + P;
                         tVector = hHatMatrixInverse * pHatVector;
 
-                        var time = passedTime;
-                        var minTemp = tVector.Min();
-                        var maxTemp = tVector.Max();
+                        TimeTemperature.Add(new KeyValuePair<double, Vector<double>>(passedTime, tVector));
+
+                        t0Vector = tVector;
 
                         // GUI update
                         Program.MainForm.Invoke((MethodInvoker) delegate
                         {
                             Program.MainForm.SimulationProgressBarValue =
-                                (int) ((time / InitialData.SimulationTime) * 100);
-                            Program.MainForm.UpdateTimeTemperatureOnRichTextBox(time, minTemp, maxTemp);
+                                (int) ((passedTime / InitialData.SimulationTime) * 100);
+                            Program.MainForm.UpdateSimulationResults();
                         });
-
-                        TimeTemperature.Add(new KeyValuePair<double, Vector<double>>(passedTime, tVector));
-
-                        t0Vector = tVector;
                     }
 
                     if (Math.Abs(passedTime - InitialData.SimulationTime) > InitialData.SimulationTimeStep) return false;
